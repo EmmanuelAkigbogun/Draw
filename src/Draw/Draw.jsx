@@ -3,7 +3,7 @@ import Form from "./Form";
 import OnLoad from "./OnLoad";
 export let Context = createContext();
 function Draw() {
-  let thick = useRef(window.outerWidth / 300000);
+  let thick = useRef(window.outerWidth / 25000);
   let [render, setRender] = useState(0);
   let vgpathxy = useRef({});
   let vgcolor = useRef([]);
