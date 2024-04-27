@@ -16,7 +16,7 @@ export let touchstart = (
       (element.clientX - vg.current.getBoundingClientRect().x) *
       (cwidth.current / vg.current.clientWidth);
     const y =
-      (element.clientY - e.target.getBoundingClientRect().y) *
+      (element.clientY - vg.current.getBoundingClientRect().y) *
       (cheight.current / vg.current.clientHeight);
     if (vgpathxy.current[`path${element.identifier}`] === undefined) {
       vgpathxy.current[`path${element.identifier}`] = [`M${x} ${y} ${x} ${y}`];
