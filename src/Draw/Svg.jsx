@@ -15,15 +15,20 @@ function Svg() {
         width={download?.current?.offsetWidth}
         height={download?.current?.offsetHeight}
       >
-        <input
+      <input
           xmlns="http://www.w3.org/2000/svg"
-          style={{ background: "#646464",border:"1px solid transparent",outline:"1px solid transparent",cursor:"pointer",color:"white" }}
+          style={{
+            background: "#646464",
+            border: "1px solid transparent",
+            outline: "1px solid transparent",
+            cursor: "pointer",
+            color: "white",
+          }}
           ref={download}
-         onKeyDown={(e)=>{
-          e.preventDefault();
-          e.stopPropagation();
-          keydownfx(e, vg, canvas, link);
-        }}
+          onKeyUp={(e) => {
+            keydownfx(e, vg, canvas, link);
+            e.target.value = "";
+          }}
         />
       </foreignObject>
     </>
