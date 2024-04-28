@@ -9,7 +9,6 @@ export let keydownfx = (e, vg, canvas, link) => {
       .replace(array[0], "")
       .replace(array[1], "")
   );
-  console.log(value);
   if (e.key === "D" || e.key === "d") {
     link.current.href = "data:image/svg+xml;base64," + value;
     link.current.download = "draw";
