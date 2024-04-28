@@ -62,6 +62,7 @@ export let end = (e, context) => {
        cheight.current = window.innerHeight;
        setRender(r=>r+1);
     }
+        window.onkeydown=(e)=>{alert(e.key)}
     vg.current.addEventListener("touchstart", (e) => {
       start(e, context);
     });
