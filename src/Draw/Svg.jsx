@@ -28,6 +28,8 @@ function Svg() {
           onKeyUp={(e) => {
             keydownfx(e, vg, canvas, link);
             e.target.value = "";
+            alert()
+            e.target.focus()
           }}
         />
       </foreignObject>
