@@ -1,9 +1,10 @@
 import { createContext, useRef, useState } from "react";
 import Form from "./Form";
 import OnLoad from "./OnLoad";
+import Svg from "./Svg";
 export let Context = createContext();
 function Draw() {
-  let thick = useRef(window.outerWidth / 25000);
+  let thick = useRef((window.innerHeight+window.innerHeight)/2000);
   let [render, setRender] = useState(0);
   let vgpathxy = useRef({});
   let vgcolor = useRef([]);
@@ -12,8 +13,8 @@ function Draw() {
   let link = useRef(null);
   let vgpath = useRef([]);
   let vgidentity = useRef({});
-  let cwidth = useRef(window.outerWidth/100);
-  let cheight = useRef(window.outerHeight/100);
+  let cwidth = useRef(window.innerWidth);
+  let cheight = useRef(window.innerHeight);
   let mooveboolean = useRef(false);
   let contextData = {
     render: render,
@@ -21,6 +22,8 @@ function Draw() {
     vgpathxy: vgpathxy,
     thick: thick,
     vg:vg,
+    canvas:canvas,
+    link:link,
     vgpath: vgpath,
     vgidentity: vgidentity,
     vgcolor: vgcolor,
@@ -29,47 +32,20 @@ function Draw() {
     cheight: cheight,
     mooveboolean: mooveboolean,
   };
-window.onkeydown=((e)=>{
-  console.log(e)
-  console.log(e.key);
-   if (e.key === "D" || e.key === "d") {
-     link.current.href =
-       "data:image/svg+xml;base64," + btoa(vg.current.outerHTML);
-     link.current.download = "draw";
-     link.current.click();
-   }
-   if (e.key === "p" || e.key === "P" || e.key === "j" || e.key === "J") {
-     let ctx = canvas.current.getContext("2d");
-     let img = new Image();
-     img.src = "data:image/svg+xml;base64," + btoa(vg.current.outerHTML);
-     img.onload = () => {
-       //document.body.appendChild(img)
-       ctx.drawImage(img, 0, 0);
-       link.current.href =
-         e.key === "j" || e.key === "J"
-           ? canvas.current.toDataURL("image/jpeg", 1)
-           : canvas.current.toDataURL("image/png",1);
-       link.current.download = "draw";
-       link.current.click();
-     };
-     img.remove();
-   }
-})
   return (
     <>
       <Context.Provider value={contextData}>
         <Form />
-        <OnLoad/>
-      </Context.Provider>
-      <svg
-        viewBox={`0 0 ${cwidth.current} ${cheight.current}`}
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        ref={vg}
-        id="vg"
-      >
-        {
-          vgpath.current.map((e, i) => {
+        <OnLoad />
+        <svg
+          viewBox={`0 0 ${cwidth.current} ${cheight.current}`}
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          ref={vg}
+          id="vg"
+        >
+          <Svg  />
+          {vgpath.current.map((e, i) => {
             return (
               <path
                 key={`val${i}`}
@@ -80,11 +56,16 @@ window.onkeydown=((e)=>{
                 strokeDasharray={0}
               />
             );
-          })
-        }
-      </svg>
-      <a href="" ref={link}></a>
-      <canvas ref={canvas} className="none" width={7000} height={7000}></canvas>
+          })}
+        </svg>
+        <a href="" ref={link}></a>
+        <canvas
+          ref={canvas}
+          className="none"
+          width={7000}
+          height={7000}
+        ></canvas>
+      </Context.Provider>
     </>
   );
 }

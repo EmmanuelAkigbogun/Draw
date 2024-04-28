@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { Context } from "./BarChart";
-import files from "../assets/files";
 import { hover } from "./Functions/Hover";
 import { setupfx } from "./Functions/Setup";
 import { tryhover } from "./Functions/Hover";

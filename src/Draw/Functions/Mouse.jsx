@@ -41,7 +41,7 @@ export let down = (e, context, ref) => {
   if (vgpathxy.current[`pathmouse`] === undefined) {
     vgpathxy.current[`pathmouse`] = [`M${x} ${y} ${x} ${y}`];
     vgpath.current.push(`M${x} ${y} ${x} ${y}`);
-    vgcolor.current.push(`purple`);
+    vgcolor.current.push(`white`);
   }
   mooveboolean.current = true;
   setRender((r) => r + 1);

@@ -8,6 +8,7 @@ export let touchstart = (
   vg,
   cwidth,
   cheight
+
 ) => {
   mooveboolean.current = false;
   for (let index = 0; index < e.targetTouches.length; index++) {

@@ -53,7 +53,15 @@ export let end = (e, context) => {
  function OnLoad() {
   let context=useContext(Context)
   let vg=context.vg
+  let cwidth = context.cwidth;
+  let cheight = context.cheight;
+  let setRender = context.setRender;
   useEffect(()=>{
+    window.onresize=()=>{
+       cwidth.current = window.innerWidth;
+       cheight.current = window.innerHeight;
+       setRender(r=>r+1);
+    }
     vg.current.addEventListener("touchstart", (e) => {
       start(e, context);
     });
