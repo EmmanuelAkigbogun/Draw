@@ -25,12 +25,11 @@ function Svg() {
             color: "white",
           }}
           ref={download}
-          onKeyUp={(e) => {
-            keydownfx(e, vg, canvas, link);
-            e.target.value = "";
-            alert()
-            e.target.focus()
-          }}
+          onKeyDown={(e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          keydownfx(e, vg, canvas, link);
+        }}
         />
       </foreignObject>
     </>
