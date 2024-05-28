@@ -1,11 +1,15 @@
 canvas,
 svg {
-  cursor: pointer;
   max-width: 100%;
   width: 100vw;
   background-color: rgb(100, 100, 100);
 }
-.canvas{
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.canvas {
   background-color: rgba(0, 0, 0, 0);
 }
 .none {
@@ -18,7 +22,40 @@ svg {
   max-width: 100%;
   margin: 10px;
   font-size: 20px;
-  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   width: 300px;
   letter-spacing: 2px;
 }
+.ini {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+path {
+  border-radius: 10px dotted green;
+  stroke-miterlimit: thick;
+}
+.fill {
+  fill: #00000000;
+}
+.draw-text{
+  font-size: 1.5vw;
+  cursor: default;
+   user-select: none;
+}
+/*
+@media screen  and (max-width:1050px) {
+  .draw-text{
+  font-size: 1.5vw;
+}}
+@media screen  and (max-width:700px) {
+  .draw-text{
+  font-size: 2vw;
+}
+}
+@media screen  and (max-width:450px) {
+  .draw-text{
+  font-size: 2.7vw;
+}
+}
+*/
