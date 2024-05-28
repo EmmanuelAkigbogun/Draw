@@ -21,17 +21,15 @@ function Draw() {
   let [render, setRender] = useState(0);
   let vgpathxy = useRef({});
   let vgcolor = useRef([
-    `yellow`
     //`red`, `white`, `purple`, `yellow`, `bisque`,`orange`
     
   ]);
   let straightcolor = useRef([
-    `yellow`
   //  `red`,`white`,`purple`,`yellow`,`bisque`,`orange`
   ]);
   let vgpath = useRef([
-    `M195 279C259 312 270 329 250 365C206 396 183 396 139 365C131 318 143 301 195 279Z`,
     /*
+    `M195 279C259 312 270 329 250 365C206 396 183 396 139 365C131 318 143 301 195 279Z`,
     `M100 50C100 63 95 76 86 85C77 94 64 100 51 100C38 100 25 95 16 86C6 77 1 65 0 52C0 39 4 26 13 17C22 7 34 1 47 0C60 -1 73 4 83 12C93 21 99 33 100 50Z`,
         `M926 199C736 224 993 284 884 297ZM876 549 844 462ZC770 530 692 334 609 461C689 571 760 300 846 322Z`,
     `M565 323C360 262 638 178 488 276`,
