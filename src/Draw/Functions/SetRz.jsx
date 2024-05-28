@@ -25,8 +25,8 @@ export let setRz = (context,x1,y1,w1,w2,h1,h2) => {
       lizt.map((r, q) => {
         let xr = r - x1;
         let yr = r - y1;
-        let xval = Math.round(x1 + wr * xr);
-        let yval = Math.round(y1 + hr * yr);
+        let xval = x1 + wr * xr;
+        let yval = y1 + hr * yr;
         if (q % 2 == 0) {
           lo.push(`${xval}`);
         } else {
@@ -37,8 +37,8 @@ export let setRz = (context,x1,y1,w1,w2,h1,h2) => {
       for (let index = 0; index < draga.current[i].length; index++) {
         let xr = +dragd.current[i][index] - x1;
         let yr = +dragd.current[i][index] - y1;
-        let xval = Math.round(x1 + wr * xr);
-        let yval = Math.round(y1 + hr * yr);
+        let xval = x1 + wr * xr;
+        let yval = y1 + hr * yr;
         if (index % 2 == 0) {
           lo.push(
             draga.current[i][index] +
@@ -75,21 +75,21 @@ export let setRz = (context,x1,y1,w1,w2,h1,h2) => {
       );
     } else if (targetObject.current[a][0].localName == "circle") {
               let [m, n, o, p] = PointToBox(...lo);
-              targetObject.current[a][0].setAttribute("r", `${(p+o)/2}`);
-              targetObject.current[a][0].setAttribute("cx", `${m}`);
-              targetObject.current[a][0].setAttribute("cy", `${n}`);
-              vgpath.current.splice(a, 1, `CIRCLE:${m} ${n} ${(p+o)/2}`);    
+              targetObject.current[a][0].setAttribute("r", `${Math.max(p,o)}`);
+              targetObject.current[a][0].setAttribute("cx", `${lo[0]}`);
+              targetObject.current[a][0].setAttribute("cy", `${lo[1]}`);
+              vgpath.current.splice(a, 1, `CIRCLE:${lo[0]} ${lo[1]} ${Math.max(p,o)}`);    
     
     } else if (targetObject.current[a][0].localName == "ellipse") {
           let [m, n, o, p] = PointToBox(...lo);
           targetObject.current[a][0].setAttribute("rx", `${o}`);
           targetObject.current[a][0].setAttribute("ry", `${p}`);
-          targetObject.current[a][0].setAttribute("cx", `${m}`);
-          targetObject.current[a][0].setAttribute("cy", `${n}`);
+          targetObject.current[a][0].setAttribute("cx", `${lo[0]}`);
+          targetObject.current[a][0].setAttribute("cy", `${lo[1]}`);
       vgpath.current.splice(
         a,
         1,
-        `ELLIPSE:${m} ${n} ${o} ${p}`
+        `ELLIPSE:${lo[0]} ${lo[1]} ${o} ${p}`
       );
     } else if (targetObject.current[a][0].localName == "line") {
       targetObject.current[a][0].setAttribute("x1", lo.map((m) => m)[0]);
@@ -112,8 +112,8 @@ let PointToBox = (...data) => {
   let x2 = Math.max(a, c);
   let y1 = Math.min(b, d);
   let y2 = Math.max(b, d);
-  let width = x2-x1;
-  let height = y2 - y1;
+  let width = Math.abs(x2-x1);
+  let height = Math.abs(y2 - y1);
   return [x1, y1, width, height];
 };
 export let rectToPath=(context,index)=>{

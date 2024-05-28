@@ -15,8 +15,8 @@ export let setPathDataV = (context,x,y) => {
     let lo = [];
     for (let index = 0; index < dragd.current[i].length; index++) {
       if (vDragpointsArr.current.includes(index)) {
-          let xval = Math.round(+dragd.current[i][index] - dragx.current + x);
-          let yval = Math.round(+dragd.current[i][index] - dragy.current + y);   
+          let xval = +dragd.current[i][index] - dragx.current + x;
+          let yval = +dragd.current[i][index] - dragy.current + y;   
         if (index % 2 == 0) {
           lo.push(
             draga.current[i][index] +
