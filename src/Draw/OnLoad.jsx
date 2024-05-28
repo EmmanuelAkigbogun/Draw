@@ -1,84 +1,102 @@
-import { useContext, useEffect } from "react";
-import { touchstart } from "./Functions/Function";
-import { touchmove } from "./Functions/Function";
-import { touchend } from "./Functions/Function";
+import { useContext, useEffect, useRef } from "react";
+import { touchmove, touchend, touchstart } from "./Functions/Function";
+import { start, move, end } from "./Functions/Touch";
 import { Context } from "./Draw"; 
 import {down, mousemove, up} from "./Functions/Mouse"
-export let start = (e, context) => {
-  let vg = context.vg;
-  let vgpath = context.vgpath;
-  let vgpathxy = context.vgpathxy;
-  let setRender = context.setRender;
-  let vgcolor = context.vgcolor;
-  let vgidentity = context.vgidentity;
-  let mooveboolean = context.mooveboolean;
-  let cwidth = context.cwidth;
-  let cheight = context.cheight;
-  e.preventDefault();
-  e.stopPropagation();
-  touchstart(
-    e,
-    vgpathxy,
-    vgidentity,
-    vgpath,
-    vgcolor,
-    mooveboolean,
-    vg,
-    cwidth,
-    cheight
-  );
-  setRender((e) => e + 1);
-};
-export let move = (e, context) => {
-  let vgpath = context.vgpath;
-  let vgpathxy = context.vgpathxy;
-  let setRender = context.setRender;
-  let vgidentity = context.vgidentity;
-  let cwidth = context.cwidth;
-  let cheight = context.cheight;
-  let vg=context.vg
-  e.preventDefault();
-  e.stopPropagation();
-  touchmove(e, vgpathxy, vgidentity, vgpath, vg, cwidth, cheight);
-  setRender((e) => e + 1);
-};
-export let end = (e, context) => {
-  let vgpathxy = context.vgpathxy;
-  let setRender = context.setRender;
-  e.preventDefault();
-  e.stopPropagation();
-  touchend(e, vgpathxy);
-  setRender((e) => e + 1);
-}
+import {keydownfx} from "./Download"
+import { promptfx } from "./Download";
  function OnLoad() {
   let context=useContext(Context)
   let vg=context.vg
-  let cwidth = context.cwidth;
-  let cheight = context.cheight;
-  let setRender = context.setRender;
+  let edit=context.edit
+  let focusbool=context.focusbool
+  let vgpath = context.vgpath;
+  let vgcolor = context.vgcolor;
+  let canvas = context.canvas;
+  let link = context.link;
+  let setRender=context.setRender;
+  let target=context.target
+  let targetObject=context.targetObject
+  let count=useRef(0)
+  let countm = useRef(0);
+  context["countm"]=countm
+  let vectoredit = context.vectoredit;
+      let shapes = context.shapes;
   useEffect(()=>{
-    window.onresize=()=>{
-       cwidth.current = window.innerWidth;
-       cheight.current = window.innerHeight;
-       setRender(r=>r+1);
-    }
     vg.current.addEventListener("touchstart", (e) => {
-      start(e, context);
+      focusbool.current[0] = true;
+      focusbool.current[1] = e.timeStamp;
+      !vectoredit.current&&!shapes.current && !edit.current && start(e, context, touchstart);
     });
     vg.current.addEventListener("touchmove", (e) => {
-      move(e, context);
+      if (count.current>=1) {
+            focusbool.current[1] = 0;
+            focusbool.current[0] = false; 
+      }
+      count.current = count.current+1;
+      !vectoredit.current &&
+        !shapes.current &&
+        !edit.current &&
+        move(e, context, touchmove);
     });
     vg.current.addEventListener("touchend", (e) => {
-      end(e, context);
+      if (
+          focusbool.current[0] === true &&
+          e.timeStamp - focusbool.current[1] > 1000
+        ) 
+      {
+          vgcolor.current.pop();
+          vgpath.current.pop();
+          keydownfx(
+            promptfx(),
+            context,
+            target
+          );
+          targetObject.current = {};
+          focusbool.current[1] = 0;
+          focusbool.current[0] = false;
+      }
+      count.current = 0;
+      !vectoredit.current &&
+        !shapes.current &&
+        !edit.current &&
+        end(e, context, touchend);
     });
+        vg.current.addEventListener("touchcancel", (e) => {
+          if (
+            focusbool.current[0] === true &&
+            e.timeStamp - focusbool.current[1] > 1000
+          ) {
+            vgcolor.current.pop();
+            vgpath.current.pop();
+            keydownfx(promptfx(), context, target);
+            targetObject.current = {};
+            focusbool.current[1] = 0;
+            focusbool.current[0] = false;
+          }
+          count.current = 0;
+           !vectoredit.current &&
+             !shapes.current &&
+             !edit.current &&
+             end(e, context, touchend);
+        });
     vg.current.addEventListener("mousedown", (e) => {
-      down(e, context, vg);
+      !vectoredit.current &&
+        !shapes.current &&
+        !edit.current &&
+        down(e, context, vg);
     });
     vg.current.addEventListener("mousemove", (e) => {
-      mousemove(e, context, vg);
+       !vectoredit.current &&
+         !shapes.current &&
+         !edit.current &&
+         mousemove(e, context, vg);
     });
     vg.current.addEventListener("mouseup", (e) => {
-      up(e, context);
+       !vectoredit.current &&
+         !shapes.current &&
+         !edit.current &&
+         up(e, context);
     });
   },[])
  }
