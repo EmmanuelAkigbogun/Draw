@@ -1,17 +1,28 @@
-export let setPathData = (context,x,y) => {
-      let targetObject = context.targetObject;
-      let dragd = context.dragd;
-      let draga = context.draga;
-      let dragx = context.dragx;
-      let dragy = context.dragy;
-      let vgpath = context.vgpath;
+export let setRotate = (context, angle) => {
+  let targetObject = context.targetObject;
+  let dragd = context.dragd;
+  let draga = context.draga;
+  let dragx = context.dragx;
+  let dragy = context.dragy;
+  let vgpath = context.vgpath;
   Object.keys(targetObject.current).map((a, i) => {
+    console.log();
+    let ctmObj=targetObject.current[a][0].getCTM().rotate(+angle)
+    //let ctmObjr = targetObject.current[a][0].getScreenCTM().rotateFromVector();
+    let z= ctmObj.a
+    let b = ctmObj.b;
+    let c = ctmObj.c;
+    let d = ctmObj.d;
+    let e = ctmObj.e;
+    let f = ctmObj.f;
+          
+              console.log(z,b,c,d,e,f);
     ///
     let lo = [];
-    let oddfactor=0
+    let oddfactor = 0;
     for (let index = 0; index < dragd.current[i].length; index++) {
-      let xval = + dragd.current[i][index] - dragx.current + x;
-      let yval = +dragd.current[i][index] - dragy.current + y;
+      let xval = Math.round(+dragd.current[i][index]);
+      let yval = Math.round(+dragd.current[i][index]);
       //////////////////////////////////////open////////////////////////////////
       if (
         (draga.current[i][index] == "M" ||
@@ -30,11 +41,14 @@ export let setPathData = (context,x,y) => {
         (index - oddfactor) % 2 != 0
       ) {
         oddfactor = oddfactor + 1;
-      } 
+      }
       ////////////////////////////////////close///////////////////////////////////////
-      if ((index-oddfactor) % 2 == 0) {
+      if ((index - oddfactor) % 2 == 0) {
         lo.push(
-          draga.current[i][index] + (dragd.current[i][index] !== "" ? xval : "")
+          draga.current[i][index] +
+            (dragd.current[i][index] !== ""
+              ? xval * z + (Math.round(+dragd.current[i][index+1]) * c) + e
+              : "")
         );
         ///////////////////////////////////////open/////////////////////////////////////////////
         if (draga.current[i][index] == "H") {
@@ -45,7 +59,7 @@ export let setPathData = (context,x,y) => {
         lo.push(
           draga.current[i][index] +
             (dragd.current[i][index] !== ""
-              ? yval
+              ? yval * d + (Math.round(+dragd.current[i][index-1]) * b) + f
               : "")
         );
       }

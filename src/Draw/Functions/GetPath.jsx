@@ -23,7 +23,6 @@ export let getPathData=(context)=>{
                 .replace(/(\.*|-)\d/g, "")
                 .split(" ")
             );
-            console.log(draga.current.length,dragd.current.length);
           } else if (targetObject.current[e][0].localName == "rect") {
             lockdrag.current &&
               dragd.current.push([

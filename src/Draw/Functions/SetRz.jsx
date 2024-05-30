@@ -8,6 +8,7 @@ export let setRz = (context,x1,y1,w1,w2,h1,h2) => {
    target.current = [];
   Object.keys(targetObject.current).map((a, i) => {
     let lo = [];
+      let oddfactor = 0;
     let wr = w2 / w1;
     let hr = h2 / h1;
     if (
@@ -39,11 +40,36 @@ export let setRz = (context,x1,y1,w1,w2,h1,h2) => {
         let yr = +dragd.current[i][index] - y1;
         let xval = x1 + wr * xr;
         let yval = y1 + hr * yr;
-        if (index % 2 == 0) {
+        //////////////////////////////////////open////////////////////////////////
+        if (
+          (draga.current[i][index] == "M" ||
+            draga.current[i][index] == "C" ||
+            draga.current[i][index] == "L") &&
+          (index - oddfactor) % 2 !== 0
+        ) {
+          oddfactor = oddfactor + 1;
+        } else if (
+          draga.current[i][index] == "V" &&
+          (index - oddfactor) % 2 === 0
+        ) {
+          oddfactor = oddfactor + 1;
+        } else if (
+          draga.current[i][index] == "H" &&
+          (index - oddfactor) % 2 != 0
+        ) {
+          oddfactor = oddfactor + 1;
+        }
+        ////////////////////////////////////close///////////////////////////////////////
+        if ((index - oddfactor) % 2 == 0) {
           lo.push(
             draga.current[i][index] +
               (dragd.current[i][index] !== "" ? xval : "")
           );
+          ///////////////////////////////////////open/////////////////////////////////////////////
+          if (draga.current[i][index] == "H") {
+            oddfactor = oddfactor + 1;
+          }
+          ////////////////////////////////////close////////////////////////////////////////////////
         } else {
           lo.push(
             draga.current[i][index] +
