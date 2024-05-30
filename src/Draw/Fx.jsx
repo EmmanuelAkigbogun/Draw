@@ -1,41 +1,3 @@
-export let ShowLineCtrl=(context,e)=>{
-    let vectorctrmixed = context.vectorctrmixed;
-    let vctrline = context.vctrline;
-                vectorctrmixed.current = e.target
-                  .getAttribute("data-value")
-                  .split(" ")
-                  .map((e) => +e)
-                  .slice(2, 6);
-
-                let arrayp1 = e.target
-                  .getAttribute("data-value")
-                  .split(" ")
-                  .map((e) => +e)
-                  .slice(0, 2);
-                let arrayc1 = e.target
-                  .getAttribute("data-value")
-                  .split(" ")
-                  .map((e) => +e)
-                  .slice(2, 4);
-                let arrayc2 = e.target
-                  .getAttribute("data-value")
-                  .split(" ")
-                  .map((e) => +e)
-                  .slice(4, 6);
-                let arrayp2 = e.target
-                  .getAttribute("data-value")
-                  .split(" ")
-                  .map((e) => +e)
-                  .slice(6, 8);
-                vctrline.current = [];
-
-                vctrline.current.push(
-                  arrayc1.join(" ") + " " + arrayp1.join(" ") + " "
-                );
-                vctrline.current.push(
-                  arrayc2.join(" ") + " " + arrayp2.join(" ") + " "
-                );
-}
 export let bendCntrlDragLine=(context,ndx)=>{
       let vectorctrmixed = context.vectorctrmixed;
       let vctrline = context.vctrline;
@@ -92,4 +54,50 @@ export let cntrlFromPoint=(context,pointx)=>{
               }
               return [...cntrl1,...cntrl2]
 }
+export let multiLineFx=(context,arraydata,pointcenter)=>{
+        let vctrline = context.vctrline;
+                if (arraydata.length == 0) {
+                } else {
+                       vctrline.current.push(
+                         arraydata.slice(0, 2).join(" ") +
+                           " " +
+                           pointcenter +
+                           " " +
+                           (pointcenter + 1) +
+                           " "
+                       );
+                if (arraydata.length == 4) {
+                    vctrline.current.push(
+                      arraydata.slice(2, 4).join(" ") +
+                        " " +
+                        pointcenter +
+                        " " +
+                        (pointcenter + 1) +
+                        " "
+                    );
+                  }
+                }
+};
+export let lineDrag=(context,pointx,a,b,c,d)=>{
+  let vDragpointsArr=context.vDragpointsArr
+  let vectorctrmixed=context.vectorctrmixed
+  let vctrline = context.vctrline;
+                          vDragpointsArr.current = [];
+                          vectorctrmixed.current = [];
+                          vctrline.current = [];
+                          let ctrlz1 = cntrlFromPoint(context, pointx[a]);
+                          let ctrlz2 = cntrlFromPoint(context, pointx[c]);
 
+                          vDragpointsArr.current.push(
+                            pointx[a],
+                            pointx[b],
+                            pointx[c],
+                            pointx[d],
+                            ...ctrlz1,
+                            ...ctrlz2
+                          );
+
+                          vectorctrmixed.current.push(...ctrlz1, ...ctrlz2);
+                          multiLineFx(context, ctrlz1, pointx[a]);
+                          multiLineFx(context, ctrlz2, pointx[c]); 
+}

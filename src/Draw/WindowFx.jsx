@@ -9,8 +9,9 @@ import { setRz } from "./Functions/SetRz";
 import { vectorPathData } from "./Functions/GetVectorPath";
 import { setPathDataV } from "./Functions/SetPathV";
 import { AddPath } from "./Functions/AddPath";
-import { ShowLineCtrl, bendCntrlDragLine, cntrlFromPoint } from "./Fx";
+import { bendCntrlDragLine, cntrlFromPoint, lineDrag, multiLineFx } from "./Fx";
 import { reDefine } from "./Vredefine";
+import { MZOnZDrag, syncMZOnZ } from "./mZSync";
 function WindowFx() {
   let context = useContext(Context);
   let cwidth = context.cwidth;
@@ -207,19 +208,27 @@ function WindowFx() {
                  .split(" ")
                  .map((e) => +e)
                  .slice(0, 2);
+              let pointx = e.target
+                                .getAttribute("data-value")
+                                .split(" ")
+                                .map((e) => +e);
 
           if (vDragpointsArr.current.length > 4 ) {
             if (bend.current) {
                  vDragpointsArr.current = [];
                vectorctrmixed.current = [];
                vctrline.current = [];
-            bendCntrlDragLine(context,ndx);
+               bendCntrlDragLine(context,ndx);
 
                              vectordrag.current=true
             }
             else{
-          
-                    ShowLineCtrl(context, e);
+               let dataq = syncMZOnZ(context, pointx);
+               lineDrag(context, pointx, 0, 1, 6, 7); 
+               if (dataq!==undefined) {
+                   MZOnZDrag(context, dataq[0], dataq[0] + 1);   
+               }  
+                
       
             }
           }else{
@@ -256,9 +265,19 @@ function WindowFx() {
                   vectorPathData(context);
                   AddPath(context);
                   reDefine(context)
-              
                 bendCntrlDragLine(context, ndx);
             }
+            else{
+
+                let dataq=  syncMZOnZ(context, pointx); 
+                console.log(dataq);
+                lineDrag(context,pointx,0,1,2,3)
+                if (dataq !== undefined) {
+                      MZOnZDrag(context, dataq[0], dataq[0] + 1);
+                } 
+            }
+  
+         
           }
           dragd.current = [];
           draga.current = [];
@@ -291,168 +310,71 @@ function WindowFx() {
             e.target.getAttribute("name")?.includes("vlineart$")
           ) {
             if (e.target.getAttribute("name")?.includes("vcirart$")) {
+
               e.target.setAttribute("fill", "blue");
               e.target.setAttribute("stroke", "white");
-              let cntrl3 = [];
-              let cntrl4 = [];
-              let cntrl5 = [];
-              let cntrl6 = [];
-              let cntrl12= cntrlFromPoint(context, +e.target.getAttribute("data-value"));
-          
-         
+              let cntrl12= cntrlFromPoint(context, +e.target.getAttribute("data-value")); 
+              let indexData = vectorGp.current.indexOf(
+                   +e.target.getAttribute("data-value")
+                 );
+              let pointbfr = vectorGp.current[indexData-2];
+               let pointaft = vectorGp.current[indexData+2];
+               let pointcenter = +e.target.getAttribute("data-value");
+        
+               let cntrl34= cntrlFromPoint(context, pointbfr); 
+               let cntrl56 = cntrlFromPoint(context, pointaft); 
               vDragpointsArr.current = [
-                +e.target.getAttribute("data-value"),
-                +e.target.getAttribute("data-value") + 1,
-                ...cntrl12
+                pointcenter,
+                pointcenter + 1,
+                ...cntrl12//,...cntrl34,...cntrl56
               ];
                  vectorctrmixed.current = [];
                  vctrline.current = [];
+                 vectorctrmixed.current.push(...cntrl12,...cntrl34,...cntrl56) 
+              console.log(cntrl12,cntrl34,cntrl56);
+              multiLineFx(context,cntrl12,pointcenter)
+               multiLineFx(context, cntrl34,pointbfr);
+                multiLineFx(context, cntrl56,pointaft);
+                 //////////////////////////////m and z sync////////////////////////////////////////////
                    if (
                      vectora.current[0][
-                       +e.target.getAttribute("data-value") + 2
+                       pointcenter + 2
                      ] == "Z"
                    ) {
                     if (
                       vectord.current[0][+e.target.getAttribute("data-mz")] ==
                         vectord.current[0][
-                          +e.target.getAttribute("data-value")
+                          pointcenter
                         ] &&
                       vectord.current[0][+e.target.getAttribute("data-mz")+1] ==
-                        vectord.current[0][+e.target.getAttribute("data-value")+1]
+                        vectord.current[0][pointcenter+1]
                     ) {
                      //only i for M CURVE
-                     let cntrlz=[]
-                               if (
-                                 vectorCi.current.includes(
-                                   +e.target.getAttribute("data-mz") + 2
-                                 )
-                               ) {
-                                 cntrlz = [
-                                   +e.target.getAttribute("data-mz") + 2,
-                                   +e.target.getAttribute("data-mz") + 3,
-                                 ];
-                               }
+                     let pointmz = +e.target.getAttribute("data-mz");
+                     let cntrlz = cntrlFromPoint(context, pointmz); 
                       vDragpointsArr.current.push(
-                        +e.target.getAttribute("data-mz")
+                        pointmz
                       );
                       vDragpointsArr.current.push(
-                        +e.target.getAttribute("data-mz") + 1
+                        pointmz+1
                       );
                            
-                             vDragpointsArr.current.push(
+                        vDragpointsArr.current.push(
                                ...cntrlz
                              );
                           //length required          
                           vectorctrmixed.current.push(...cntrlz);
-                            vctrline.current.push(
-                              cntrlz.join(" ") +
-                                " " +
-                                +e.target.getAttribute("data-mz") +
-                                " " +
-                                +e.target.getAttribute("data-mz") +
-                                1
-                            );
+                        multiLineFx(context, cntrlz, pointmz);
+                    
                     }
                   
                    }
-              
+              ///////////////////////////////////////////////////////////////////////////////////////
            
-              vectorctrmixed.current.push(...cntrl12);
-              let index3 = vectorCL.current.indexOf(
-                +e.target.getAttribute("data-value")
-              );
-              let mainpointx = +e.target.getAttribute("data-value");
-              let mainpointy = +e.target.getAttribute("data-value") + 1;
-              let jx = cntrl12[0];
-              let ix = cntrl12[2];
-              if (jx === undefined) {
-                //no  point before
-              } else {
-                let pointjx = vectorCL.current[index3 - 2];
-                let pointjy = vectorCL.current[index3 - 1];
-                if (vectorCj.current.includes(pointjx - 1)) {
-                  cntrl3 = [pointjx - 2, pointjx - 1];
-                  vectorctrmixed.current.push(...cntrl3);
-                  vctrline.current.push(
-                    cntrl12.slice(0,2).join(" ") + " " + mainpointx + " " + mainpointy
-                  );
-                  vctrline.current.push(
-                    cntrl3.join(" ") + " " + pointjx + " " + pointjy
-                  );
-                }
-                if (vectorCi.current.includes(pointjx + 2)) {
-                  cntrl4 = [pointjx + 2, pointjx + 3];
-                  vectorctrmixed.current.push(...cntrl4);
-                  if (
-                    !vctrline.current.includes(
-                      cntrl12.slice(0, 2).join(" ") +
-                        " " +
-                        mainpointx +
-                        " " +
-                        mainpointy
-                    )
-                  ) {
-                    vctrline.current.push(
-                      cntrl12.slice(0, 2).join(" ") +
-                        " " +
-                        mainpointx +
-                        " " +
-                        mainpointy
-                    );
-                  }
-
-                  vctrline.current.push(
-                    cntrl4.join(" ") + " " + pointjx + " " + pointjy
-                  );
-                }
-              }
-              if (ix === undefined) {
-                //no point after
-              } else {
-                let pointix = vectorCL.current[index3 + 2];
-                let pointiy = vectorCL.current[index3 + 3];
-                if (vectorCj.current.includes(pointix - 1)) {
-                  cntrl5 = [pointix - 2, pointix - 1];
-                  vectorctrmixed.current.push(...cntrl5);
-                  vctrline.current.push(
-                    cntrl12.slice(2, 4).join(" ") +
-                      " " +
-                      mainpointx +
-                      " " +
-                      mainpointy
-                  );
-                  vctrline.current.push(
-                    cntrl5.join(" ") + " " + pointix + " " + pointiy
-                  );
-                }
-                if (vectorCi.current.includes(pointix + 2)) {
-                  cntrl6 = [pointix + 2, pointix + 3];
-                  vectorctrmixed.current.push(...cntrl6);
-                  if (
-                    !vctrline.current.includes(
-                      cntrl12.slice(2, 4).join(" ") +
-                        " " +
-                        mainpointx +
-                        " " +
-                        mainpointy
-                    )
-                  ) {
-                    vctrline.current.push(
-                      cntrl12.slice(2, 4).join(" ") +
-                        " " +
-                        mainpointx +
-                        " " +
-                        mainpointy
-                    );
-                  }
-
-                  vctrline.current.push(
-                    cntrl6.join(" ") + " " + pointix + " " + pointiy
-                  );
-                }
-              }
+  
             }
             if (e.target.getAttribute("name")?.includes("vlineart$")) {
+              console.log("vli");
               vctrline.current = [];
               vectorctrmixed.current = [];
               e.target.setAttribute("fill", "purple");
@@ -502,6 +424,13 @@ function WindowFx() {
             dragy.current = dataY;
             vectordrag.current = true;
           }
+         else if (e.target.localName =="svg") {
+                vctrline.current = [];
+                vectorctrmixed.current = [];
+                vDragpointsArr.current=[]
+                velement?.current[0]?.setAttribute("fill", "white");
+                velement?.current[0]?.setAttribute("stroke", "white");
+         }
         }
         setRender((r) => r + 1);
       } else {

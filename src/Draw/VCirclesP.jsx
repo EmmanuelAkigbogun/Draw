@@ -7,9 +7,23 @@ function VCirclesP() {
      let vectord = context.vectord;
      let vectora = context.vectora;
      let vectoredit = context.vectoredit;
+     let vectorGp=context.vectorGp
      let mval=0
+     let oddfactor=0;
      return vectoredit.current&&vectorCL.current.map((e, i) => {
-       if (i % 2 == 0 && vectord.current[0][e] !== "") {
+       ////////////////////////////////////open///////////////////////////////////////
+       if (
+         (vectora.current[0][e] == "M" ||
+           vectora.current[0][e] == "C" ||
+           vectora.current[0][e] == "L") &&
+         (i - oddfactor) % 2 !== 0
+       ) {
+         oddfactor = oddfactor + 1;
+       } else if (vectora.current[0][e] == "Z" && (i - oddfactor) % 2 == 0) {
+         oddfactor = oddfactor + 1;
+       }
+       ////////////////////////////////////close///////////////////////////////////////
+       if ((i - oddfactor) % 2 == 0 && vectord.current[0][e] !== "") {
          if (vectora.current[0][e] == "M") {
            mval = e;
          }

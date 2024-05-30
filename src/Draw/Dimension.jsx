@@ -71,7 +71,7 @@ function Dimension({x1,x2,y1,y2}) {
         {!editdrag.current?
           `${Math.round(x2 - 2 - (x1 + 2))} x ${Math.round(
             y2 - 2 - (y1 + 2)
-          )}`:`[x= ${Math.round(x1)}, y= ${Math.round(y1)}]`
+          )}`:`x= ${Math.round(x1)}, y= ${Math.round(y1)}`
         }
       </text>
     </>

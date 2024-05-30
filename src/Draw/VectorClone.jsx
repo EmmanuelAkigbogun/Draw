@@ -12,10 +12,41 @@ function VectorClone() {
   let thick = context.thick;
   let targetObject=context.targetObject
   let vgcolor=context.vgcolor
+  let oddfactor=0
+          let start = 0;
+         // console.log(vectora.current,vectord.current);
   return vectoredit.current&&vectorGp.current.map((e, i) => {
-    if (i % 2 == 0 && i < vectorGp.current.length - 2) {
-      let start = 0;
+    //console.log(vectora.current[0][vectorGp.current[i + 2]] === "Z");
+
+   // console.log(i);
+    //////////////////////////////////////open////////////////////////////////
+    if (
+      (vectora.current[0][vectorGp.current[i]] == "M" ||
+        vectora.current[0][vectorGp.current[i]] == "C" ||
+        vectora.current[0][vectorGp.current[i]] == "L") &&
+      (i - oddfactor) % 2 !== 0
+    ) {
+      oddfactor = oddfactor + 1;
+    } else if (
+      vectora.current[0][vectorGp.current[i]] == "V" &&
+      (i - oddfactor) % 2 === 0
+    ) {
+      oddfactor = oddfactor + 1;
+    } else if (
+      vectora.current[0][vectorGp.current[i]] == "Z" &&
+      (i - oddfactor) % 2 === 0
+    ) {
+      oddfactor = oddfactor + 1;
+    } else if (
+      vectora.current[0][vectorGp.current[i]] == "H" &&
+      (i - oddfactor) % 2 != 0
+    ) {
+      oddfactor = oddfactor + 1;
+    }
+    ////////////////////////////////////close///////////////////////////////////////
+    if ((i - oddfactor) % 2 == 0 && i < vectorGp.current.length - 2) {
       if (vectora.current[0][vectorGp.current[i]] === "M") {
+      //  console.log("hi",i);
         start = i;
       }
       if (vectorCp.current.includes(e)) {
@@ -57,9 +88,9 @@ function VectorClone() {
                 ? vectorGp.current[start + 1]
                 : vectorGp.current[i + 3]
             }`}
-            data-mz={
+            data-qz={
               vectora.current[0][vectorGp.current[i + 2]] === "Z"
-                ? vectorGp.current[i]
+                ?vectorGp.current[start]+" "+vectorGp.current[i]
                 : ""
             }
           />
@@ -97,15 +128,20 @@ function VectorClone() {
                 ? vectorGp.current[start + 1]
                 : vectorGp.current[i + 3]
             }`}
-            data-mz={
+            data-qz={
               vectora.current[0][vectorGp.current[i + 2]] === "Z"
-                ? vectorGp.current[i]
+                ? vectorGp.current[start] + " " + vectorGp.current[i]
                 : ""
             }
           />
         );
       }
     }
+    ///////////////////////////////////////open/////////////////////////////////////////////
+    if (vectora.current[0][vectorGp.current[i]] == "H") {
+      oddfactor = oddfactor + 1;
+    }
+    ////////////////////////////////////close////////////////////////////////////////////////
   });
 }
 export default VectorClone;

@@ -1,5 +1,6 @@
 import { getPathData } from "./Functions/GetPath";
 import { setPathData } from "./Functions/SetPath";
+import { setRotate } from "./Functions/SetRotate";
 import { pathToRect, rectToPath, setRz } from "./Functions/SetRz";
 import Circle from "./PenHoverCircle";
 export let keydownfx = (e, context, target) => {
@@ -231,6 +232,14 @@ export let keydownfx = (e, context, target) => {
     } else {
       vpoly.current = false;
     }
+    setRender((r) => r + 1);
+  } else if (e.key === "PageUp") {
+      let angle = prompt("angle");
+          dragd.current = [];
+          draga.current = [];
+         getPathData(context);
+         setRotate(context,angle); 
+
     setRender((r) => r + 1);
   } else if (e.key === "R" || e.key === "r") {
     horizontal.current = true;

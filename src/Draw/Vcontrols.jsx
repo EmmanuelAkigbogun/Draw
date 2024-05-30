@@ -7,13 +7,15 @@ function Vcontrols() {
   let vectorCj = context.vectorCj;
   let circlerad = context.circlerad;
   let vectord = context.vectord;
+    let vectora = context.vectora;
   let velement = context.velement;
   let vectorctrmixed = context.vectorctrmixed;
    let vectoredit = context.vectoredit;
    let ashen=context.ashen
-  //vectorctrmixed.current=[...vectorCi.current,...vectorCj.current]
+  
+
   return vectoredit.current&&vectorctrmixed.current.map((e, i) => {
-    if (i % 2 == 0) {
+    if (i % 2 == 0 && vectord.current[0][e] !== "") {
       return (
         <circle
           cx={vectord.current[0][e]}
