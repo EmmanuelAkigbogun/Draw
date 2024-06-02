@@ -26,10 +26,12 @@ function Draw() {
     
   ]);
   let straightcolor = useRef([
-   // `yellow`
+    //`yellow`
   //  `red`,`white`,`purple`,`yellow`,`bisque`,`orange`
   ]);
   let vgpath = useRef([
+    
+    //`M42.50100200400806 163.125040743785C70.50100200400806 183.125040743785 69.50100200400806 183.125040743785 87.50100200400806 212.125040743785C108 227 138 189 162.50100200400806 179.125040743785L173.50100200400806 147.125040743785L214.50100200400806 157.125040743785L187.50100200400806 207.125040743785C209.50100200400806 261.125040743785 161.50100200400806 290.125040743785 125.50100200400806 253.125040743785C106.50100200400806 268.125040743785 104.50100200400806 269.125040743785 91.50100200400806 273.125040743785C64.50100200400806 271.125040743785 64.50100200400806 271.125040743785 42.50100200400806 263.125040743785L23.501002004008058 307.125040743785L-20.498997995991942 305.125040743785C5.501002004008058 255.125040743785 -112 238 -45.49899799599194 166.125040743785C-6 152 -5 153 42.50100200400806 163.125040743785Z`,
     //`M656.2800729927008 234.06676673865095C466.2800729927008 259.0667667386509 723.2800729927008 319.066766738651 614.2800729927008 332.066766738651ZM659 640C620 650 448 589 533 518C513 611 422.2800729927008 369.0667667386509 339.2800729927008 496.0667667386509C419.2800729927008 606.0667667386509 387 208 473 230C537 367 684 591 702 281Z`,
     // `M234 465L467 698L234 465Z`
     //`M317.01 0.01C127.01 25.01 384.01 85.01 275.01 98.01ZM267.01 350.01 235.01 263.01C161.01 331.01 83.01 135.01 0.01 262.01C80.01 372.01 151.01 101.01 237.01 123.01Z`,
@@ -64,7 +66,7 @@ function Draw() {
   let line = useRef(false);
   let pen = useRef(false);
   let pencircle = useRef(0);
-  let circlerad = useRef([`.4%`, `.2%`,`.1`]);
+  let circlerad = useRef([`.4%`, `.2%`,`.1`,`.6%`]);
   let lineeditwidth = useRef(`.3%`);
   let pencirclearr = useRef([]);
   let movepen = useRef(``);
@@ -76,7 +78,7 @@ function Draw() {
   let draga = useRef([]);
   let dragbool = useRef(false);
   let dragrect = useRef([]);
-  let dragrecta = useRef([]);
+  let dragrectr = useRef([]);
   let drag = useRef(false);
   let bBoxColor = useRef("#434343");
   let ashen = useRef("#848484");
@@ -118,6 +120,11 @@ function Draw() {
   let vage = useRef([]);
   let bend = useRef(false);
   let vmz = useRef([]);
+  let rotatedown = useRef(false);
+  let anglevalue=useRef([]);
+  let rotatewheel = useRef(false);
+  let rotatetype = useRef(``);
+  let rotatepoint = useRef([]);
   let contextData = {
     render: render,
     edit: edit,
@@ -126,7 +133,7 @@ function Draw() {
     thick: thick,
     vg: vg,
     bBoxColor: bBoxColor,
-    ashen:ashen,
+    ashen: ashen,
     ctx: ctx,
     link: link,
     vgpath: vgpath,
@@ -159,7 +166,7 @@ function Draw() {
     draga: draga,
     dragbool: dragbool,
     dragrect: dragrect,
-    dragrecta: dragrecta,
+    dragrectr: dragrectr,
     drag: drag,
     alignedline: alignedline,
     pick: pick,
@@ -197,7 +204,12 @@ function Draw() {
     centercirclearr: centercirclearr,
     vage: vage,
     bend: bend,
-    vmz:vmz,
+    vmz: vmz,
+    rotatedown: rotatedown,
+    anglevalue: anglevalue,
+    rotatewheel: rotatewheel,
+    rotatetype: rotatetype,
+    rotatepoint: rotatepoint,
   };
   return (
     <>

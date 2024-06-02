@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Context } from "./Draw";
 function CenterCircle() {
+  //pen line divide
   let context = useContext(Context);
   let centercirclearr = context.centercirclearr;
   let circlerad = context.circlerad;

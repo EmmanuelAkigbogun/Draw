@@ -8,6 +8,8 @@ function Dimension({x1,x2,y1,y2}) {
     let edit = context.edit;
   let highlight = context.highlight;
   let vectoredit = context.vectoredit
+  let rotatedown=context.rotatedown
+    let anglevalue = context.anglevalue;
   let text=useRef(null)
   let [num,setnum] = useState(0);
   let num1 = useRef(0);
@@ -68,11 +70,15 @@ function Dimension({x1,x2,y1,y2}) {
         name="recttxtart$"
         className="draw-text"
       >
-        {!editdrag.current?
-          `${Math.round(x2 - 2 - (x1 + 2))} x ${Math.round(
-            y2 - 2 - (y1 + 2)
-          )}`:`x= ${Math.round(x1)}, y= ${Math.round(y1)}`
-        }
+        {!editdrag.current
+          ? `${!rotatedown.current ? Math.round(x2 - 2 - (x1 + 2)):``} ${
+              !rotatedown.current ? `x`:``
+            } ${!rotatedown.current?Math.round(y2 - 2 - (y1 + 2)):``} ${
+              rotatedown.current
+                ? ` (${Math.round(anglevalue.current)} deg)`
+                : ``
+            }`
+          : `x= ${Math.round(x1)}, y= ${Math.round(y1)}`}
       </text>
     </>
   );

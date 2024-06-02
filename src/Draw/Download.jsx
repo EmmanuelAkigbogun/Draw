@@ -1,7 +1,9 @@
+import { SetShear } from "./Functions/SetShear";
 import { getPathData } from "./Functions/GetPath";
 import { setPathData } from "./Functions/SetPath";
 import { setRotate } from "./Functions/SetRotate";
 import { pathToRect, rectToPath, setRz } from "./Functions/SetRz";
+import { HeightFx, rotateFx, xfx } from "./Functions/xFx";
 import Circle from "./PenHoverCircle";
 export let keydownfx = (e, context, target) => {
   console.log(e.key);
@@ -28,25 +30,26 @@ export let keydownfx = (e, context, target) => {
   let hovercolor = context.hovercolor;
   let cursor = context.cursor;
   let duplicate = context.duplicate;
-  let editdrag=context.editdrag
+  let editdrag = context.editdrag;
   let targetObject = context.targetObject;
-  let draga=context.draga
-    let dragd = context.dragd;
-    let lockdrag =context.lockdrag
-    let vpoly=context.vpoly
-       let dragx = context.dragx;
-       let dragy = context.dragy;
-         let vectoredit = context.vectoredit;
-         let bend=context.bend
+  let draga = context.draga;
+  let dragd = context.dragd;
+  let lockdrag = context.lockdrag;
+  let vpoly = context.vpoly;
+  let dragx = context.dragx;
+  let dragy = context.dragy;
+  let vectoredit = context.vectoredit;
+  let bend = context.bend;
+  let dragrectr = context.dragrectr;
+    let anglevalue = context.anglevalue;
   if (e.key !== "G" && e.key !== "g") {
-    if(e.ctrlKey){
-
+    if (e.ctrlKey) {
     }
   }
-    if (pen.current && e.key !== "W" && e.key !== "w") {
-      vgpath.current.splice(vgpath.current.length - 1, 1, downconst.current);
-      pen.current = false;
-    }
+  if (pen.current && e.key !== "W" && e.key !== "w") {
+    vgpath.current.splice(vgpath.current.length - 1, 1, downconst.current);
+    pen.current = false;
+  }
   if (e.key === "e" || e.key === "E") {
     edit.current = true;
     movepen.current = ``;
@@ -59,26 +62,22 @@ export let keydownfx = (e, context, target) => {
     shapes.current = false;
     cursor.current = ``;
     setRender((r) => r + 1);
-  } 
-  else   if (e.key === "f" || e.key === "F") {
-    let arraynumber=[]
-    Object.keys(targetObject.current).map(e=>{
+  } else if (e.key === "f" || e.key === "F") {
+    let arraynumber = [];
+    Object.keys(targetObject.current).map((e) => {
       if (targetObject.current[e][0].localName === "rect") {
         arraynumber.push(targetObject.current[e][7]);
         rectToPath(context, targetObject.current[e][7]);
-                setRender((r) => r + 1);
-            
-      }
-      else if (targetObject.current[e][0].localName === "path") {
+        setRender((r) => r + 1);
+      } else if (targetObject.current[e][0].localName === "path") {
         pathToRect(context, targetObject.current[e][7]);
-         arraynumber.push(targetObject.current[e][7]);
-                 setRender((r) => r + 1);
+        arraynumber.push(targetObject.current[e][7]);
+        setRender((r) => r + 1);
       }
     });
-        setRender((r) => r + 1);
+    setRender((r) => r + 1);
 
-    targetObject.current={}
-
+    targetObject.current = {};
   } else if (e.key === "D" || e.key === "d") {
     if (!e.shiftKey) {
       movepen.current = ``;
@@ -141,27 +140,7 @@ export let keydownfx = (e, context, target) => {
     cursor.current = `crosshair`;
     setRender((r) => r + 1);
   } else if (e.key === "H" || e.key === "h") {
-    dragd.current = [];
-    draga.current = [];
-    lockdrag.current = true;
-    getPathData(context);
-    lockdrag.current = false;
-    let x1 = Object.keys(targetObject.current).map(
-      (e) => targetObject.current[e][1]
-    );
-    x1 = Math.min(...x1);
-    let x2 = Object.keys(targetObject.current).map(
-      (e) => targetObject.current[e][5]
-    );
-    x2 = Math.max(...x2);
-    let y1 = Object.keys(targetObject.current).map(
-      (e) => targetObject.current[e][2]
-    );
-    y1 = Math.min(...y1);
-    let y2 = Object.keys(targetObject.current).map(
-      (e) => targetObject.current[e][6]
-    );
-    y2 = Math.max(...y2);
+
     let wihi = prompt("width height");
     let wid;
     let hei;
@@ -169,44 +148,8 @@ export let keydownfx = (e, context, target) => {
     else wid = +wihi.split(" ")[0];
     if (+wihi.split(" ")[1] === 0) hei = 0.01;
     else hei = +wihi.split(" ")[1];
-    setRz(
-      context,
-      x1,
-      y1,
-      x2 - x1, //w1
-      wid,
-      y2 - y1, //h1
-      hei
-    );
-    dragd.current = [];
-    draga.current = [];
-    setRender((r) => r + 1);
-
-    Object.keys(targetObject.current).map((e) => {
-      targetObject.current[e][1] = targetObject.current[e][0].getBBox().x;
-      targetObject.current[e][2] = targetObject.current[e][0].getBBox().y;
-      targetObject.current[e][3] = targetObject.current[e][0].getBBox().width;
-      targetObject.current[e][4] = targetObject.current[e][0].getBBox().height;
-      targetObject.current[e][5] =
-        targetObject.current[e][1] + targetObject.current[e][3];
-      targetObject.current[e][6] =
-        targetObject.current[e][2] + targetObject.current[e][4];
-    });
+    HeightFx(context,wid,hei)
   } else if (e.key === "X" || e.key === "x") {
-    dragd.current = [];
-    draga.current = [];
-    let x1 = Object.keys(targetObject.current).map(
-      (e) => targetObject.current[e][1]
-    );
-    x1 = Math.min(...x1);
-
-    let y1 = Object.keys(targetObject.current).map(
-      (e) => targetObject.current[e][2]
-    );
-    y1 = Math.min(...y1);
-    dragx.current = x1;
-    dragy.current = y1;
-    getPathData(context);
     let xy = prompt("x y");
     let xq;
     let yq;
@@ -214,18 +157,7 @@ export let keydownfx = (e, context, target) => {
     else xq = +xy.split(" ")[0];
     if (+xy.split(" ")[1] === 0) yq = 0.01;
     else yq = +xy.split(" ")[1];
-    setPathData(context, xq, yq);
-    setRender((r) => r + 1);
-    Object.keys(targetObject.current).map((e) => {
-      targetObject.current[e][1] = targetObject.current[e][0].getBBox().x;
-      targetObject.current[e][2] = targetObject.current[e][0].getBBox().y;
-      targetObject.current[e][3] = targetObject.current[e][0].getBBox().width;
-      targetObject.current[e][4] = targetObject.current[e][0].getBBox().height;
-      targetObject.current[e][5] =
-        targetObject.current[e][1] + targetObject.current[e][3];
-      targetObject.current[e][6] =
-        targetObject.current[e][2] + targetObject.current[e][4];
-    });
+    xfx(context, xq, yq);
   } else if (e.key === "ArrowRight" || e.key === "ArrowUp") {
     if (e.key === "ArrowUp") {
       vpoly.current = true;
@@ -234,12 +166,34 @@ export let keydownfx = (e, context, target) => {
     }
     setRender((r) => r + 1);
   } else if (e.key === "PageUp") {
+    if (e.shiftKey) {
+      let xy = prompt("x y");
+      let xq;
+      let yq;
+      if (+xy.split(" ")[0] === 0) xq = 0.01;
+      else xq = +xy.split(" ")[0];
+      if (+xy.split(" ")[1] === 0) yq = 0.01;
+      else yq = +xy.split(" ")[1];
+        let coriginx = -(dragrectr.current[1] - dragrectr.current[0]) / 2;
+        let coriginy = -(dragrectr.current[3] - dragrectr.current[2]) / 2;
+        let c2x =
+          dragrectr.current[0] +
+          (dragrectr.current[1] - dragrectr.current[0]) / 2;
+        let c2y =
+          dragrectr.current[2] +
+          (dragrectr.current[3] - dragrectr.current[2]) / 2;
+        xfx(context, coriginx, coriginy);
+        dragd.current = [];
+        draga.current = [];
+        getPathData(context);
+           SetShear(context, xq, yq);
+        xfx(context, (c2x + coriginx), (c2y + coriginy));
+    } else {
       let angle = prompt("angle");
-          dragd.current = [];
-          draga.current = [];
-         getPathData(context);
-         setRotate(context,angle); 
-
+      anglevalue.current=+angle
+      rotateFx(context, 0);
+      rotateFx(context, (+angle));
+    }
     setRender((r) => r + 1);
   } else if (e.key === "R" || e.key === "r") {
     horizontal.current = true;

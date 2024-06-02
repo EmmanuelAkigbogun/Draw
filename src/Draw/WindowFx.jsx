@@ -12,6 +12,10 @@ import { AddPath } from "./Functions/AddPath";
 import { bendCntrlDragLine, cntrlFromPoint, lineDrag, multiLineFx } from "./Fx";
 import { reDefine } from "./Vredefine";
 import { MZOnZDrag, syncMZOnZ } from "./mZSync";
+import { getRotateAngle } from "./Functions/getRotateAngle";
+import { rotateFx } from "./Functions/xFx";
+import { setTran } from "./Functions/SetTrans";
+import { setRotate } from "./Functions/SetRotate";
 function WindowFx() {
   let context = useContext(Context);
   let cwidth = context.cwidth;
@@ -59,6 +63,8 @@ function WindowFx() {
   let cursor = context.cursor;
   let eliele = context.eliele;
   let lockdrag = context.lockdrag;
+  let rotatedown=context.rotatedown;
+    let rotatewheel = context.rotatewheel;
   let rcursor = context.rcursor;
   let vectorindex = context;
   let vectoredit = context.vectoredit;
@@ -80,6 +86,7 @@ function WindowFx() {
   let vage = context.vage;
   let bend = context.bend;
   let ashen=context.ashen
+  let rotatetype = context.rotatetype;
   let mouseon=useRef(false)
   useEffect(() => {
     window.onresize = (e) => {
@@ -146,34 +153,19 @@ function WindowFx() {
         vectordrag.current = false;
         bend.current = false;
         // target.current[0].classList.remove("none");
-
-        if (!e.target.getAttribute("name")?.includes("art$")) {
-          target.current = [];
-          targetObject.current = {};
-          target.current.push(e.target);
-          target.current.push(target.current[0].getBBox().x);
-          target.current.push(target.current[0].getBBox().y);
-          target.current.push(target.current[0].getBBox().width);
-          target.current.push(target.current[0].getBBox().height);
-          target.current.push(target.current[1] + target.current[3]);
-          target.current.push(target.current[2] + target.current[4]);
-          target.current.push(hovercolor.current);
-          targetObject.current[hovercolor.current] = target.current;
-        } else if (e.target.getAttribute("name")?.includes("cloneart$")) {
-          let el = target.current[0];
-          target.current = [];
-          targetObject.current = {};
-          target.current.push(el);
-          target.current.push(target.current[0].getBBox().x);
-          target.current.push(target.current[0].getBBox().y);
-          target.current.push(target.current[0].getBBox().width);
-          target.current.push(target.current[0].getBBox().height);
-          target.current.push(target.current[1] + target.current[3]);
-          target.current.push(target.current[2] + target.current[4]);
-          target.current.push(hovercolor.current);
-          targetObject.current[hovercolor.current] = target.current;
-        } else {
-        }
+                 let el = target.current[0];
+                 target.current = [];
+                 targetObject.current = {};
+                 target.current.push(el);
+                 target.current.push(target.current[0].getBBox().x);
+                 target.current.push(target.current[0].getBBox().y);
+                 target.current.push(target.current[0].getBBox().width);
+                 target.current.push(target.current[0].getBBox().height);
+                 target.current.push(target.current[1] + target.current[3]);
+                 target.current.push(target.current[2] + target.current[4]);
+                 target.current.push(hovercolor.current);
+                 targetObject.current[hovercolor.current] = target.current;
+                 
       } else {
         if (
           !e.target.getAttribute("name")?.includes("art$") &&
@@ -510,35 +502,46 @@ function WindowFx() {
               dragy.current = dataY;
               lockdrag.current = true;
               getPathData(context);
-            } else {
-              if (
-                dataX >= dragrect.current[0] &&
-                dataX <= dragrect.current[1] &&
-                dataY >= dragrect.current[2] &&
-                dataY <= dragrect.current[3]
-              ) {
-                drag.current = true;
-                highlight.current = false;
-              } else {
-                pick.current = [];
-                drag.current = false;
-                highlight.current = true;
-                pick.current.push(dataX, dataY);
-              }
-              if (!e.ctrlKey) {
-                dragbool.current = true;
-                dragd.current = [];
-                draga.current = [];
-              } else {
-                dragbool.current = true;
-              }
-            }
+            } 
+            else if (
+                  e.target.getAttribute("name") === "rotcirart$"
+                ) {
+                  dragd.current = [];
+                  draga.current = [];
+                  dragx.current = dataX;
+                  dragy.current = dataY;
+                  rotatedown.current = true;
+                  rotatewheel.current = true;
+                  rotatetype.current = e.target.getAttribute("data-rotate");
+                } else {
+                  if (
+                    dataX >= dragrect.current[0] &&
+                    dataX <= dragrect.current[1] &&
+                    dataY >= dragrect.current[2] &&
+                    dataY <= dragrect.current[3]
+                  ) {
+                    drag.current = true;
+                    highlight.current = false;
+                  } else {
+                    pick.current = [];
+                    drag.current = false;
+                    highlight.current = true;
+                    pick.current.push(dataX, dataY);
+                  }
+                  if (!e.ctrlKey) {
+                    dragbool.current = true;
+                    dragd.current = [];
+                    draga.current = [];
+                  } else {
+                    dragbool.current = true;
+                  }
+                }
           }
         }
         if (
           Object.keys(targetObject.current).length > 0 &&
           edit.current &&
-          !lockdrag.current
+          !lockdrag.current&&!rotatedown.current
         ) {
           dragx.current = dataX;
           dragy.current = dataY;
@@ -568,6 +571,10 @@ function WindowFx() {
           setRender((r) => r + 1);
         }
       } else {
+        if (rotatedown.current) {
+          getRotateAngle(context,x,y)
+          cursor.current = rcursor.current;
+        }
         if (lockdrag.current) {
           dragbool.current = false;
           cursor.current = rcursor.current;
@@ -659,7 +666,8 @@ function WindowFx() {
           } else if (rcursor.current == "w-resize" && x1 - x2 !== 0) {
             setRz(context, x2, 1, x1 - x2, x - pick.current[2], 1, 1);
           } else {
-            setPathData(context, x, y);
+            //setPathData(context,x,y);
+            setTran(context, x - dragx.current, y - dragy.current);
           }
         }
 
@@ -808,7 +816,8 @@ function WindowFx() {
           ) {
             dragbool.current = false;
             cursor.current = `grabbing`;
-            setPathData(context, x, y);
+            //setPathData(context, x, y);
+            setTran(context,x-dragx.current,y- dragy.current);
             editdrag.current = true;
             setRender((r) => r + 1);
           } else {
@@ -906,12 +915,28 @@ function WindowFx() {
             targetObject.current = {};
             targetObject.current[hovercolor.current] = target.current;
           }
-          if (editdrag.current || lockdrag.current) {
+     
+          if (editdrag.current || lockdrag.current||rotatedown.current) {
             if (editdrag.current) {
               editdrag.current = false;
             }
             if (lockdrag.current) {
               lockdrag.current = false;
+            }
+            if (rotatedown.current) {
+                    rotatedown.current=false;
+                
+                                Object.keys(targetObject.current).map((a, i) => {
+                                  targetObject.current[a][0].setAttribute(
+                                    "rotate-data",
+                                    +targetObject.current[a][0]?.getAttribute(
+                                      "rotate-dataw"
+                                    ) +
+                                      +targetObject.current[a][0]?.getAttribute(
+                                        "rotate-data"
+                                      )
+                                  );
+                                })
             }
             if (
               e.target.getAttribute("cursor")?.includes("cursor") &&
@@ -1096,7 +1121,6 @@ function WindowFx() {
         setRender((r) => r + 1);
       }
     };
-    //https://www.reddit.com/r/bestsquirt/comments/1880sn2/sexy_ebony_baddie_queen_tahshaar_makes_a_big_wet/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
   }, []);
 
   return <></>;
