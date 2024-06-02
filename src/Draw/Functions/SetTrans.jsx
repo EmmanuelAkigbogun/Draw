@@ -1,5 +1,4 @@
-
-export let setRotate = (context, angle,c2x,c2y) => {
+export let setTran = (context,x,y) => {
   let targetObject = context.targetObject;
   let dragd = context.dragd;
   let draga = context.draga;
@@ -7,8 +6,6 @@ export let setRotate = (context, angle,c2x,c2y) => {
   let dragy = context.dragy;
   let dragrect = context.dragrect;
   let rotatedown = context.rotatedown;
-  let rotatewheel = context.rotatewheel;
-  let anglevalue=context.anglevalue
   let vgpath = context.vgpath;
   Object.keys(targetObject.current).map((a, i) => {
     //let ctmObj=targetObject.current[a][0].getCTM().rotate(+angle)
@@ -19,49 +16,12 @@ export let setRotate = (context, angle,c2x,c2y) => {
     //let d = ctmObj.d;
     //let e = ctmObj.e;
     //let f = ctmObj.f;
-    const pi=Math.PI
-    let ma = +angle * (pi / 180);
-if (
-    rotatewheel.current
-) {
- if (targetObject.current[a][0]?.getAttribute("rotate-dataw") !== null) {
-   ma =
-     ( +targetObject.current[a][0]?.getAttribute("rotate-dataw")) *
-     (pi / 180);
- }
-
-
-} else {
-  if (rotatedown.current) {
-      if (targetObject.current[a][0]?.getAttribute("rotate-dataw") !== null) {
-        ma =
-          (+angle -
-            +targetObject.current[a][0]?.getAttribute("rotate-dataw")) *
-          (pi / 180);
-      }
-      targetObject.current[a][0].setAttribute(
-        "rotate-dataw",
-        +angle 
-      );
-  
-  }
-else{
-  if (targetObject.current[a][0]?.getAttribute("rotate-data") !== null) {
-    ma =
-      (+angle - +targetObject.current[a][0]?.getAttribute("rotate-data")) *
-      (pi / 180);
-  }
-    targetObject.current[a][0].setAttribute("rotate-data", angle);
-}
-}
-     let coz=Math.cos(-ma)
-     let zin=Math.sin(-ma);
-      let z = coz
-      let b = -zin
-      let c = zin;
-      let d = coz
-      let e = c2x*(1 - coz) + c2y*zin;
-      let f = c2y*(1 - coz) -c2x * zin;
+    let z = 1;
+    let b = 0;
+    let c = 0;
+    let d = 1;
+    let e = x;
+    let f = y;
     ///
     let lo = [];
     let oddfactor = 0;
@@ -92,7 +52,7 @@ else{
         lo.push(
           draga.current[i][index] +
             (dragd.current[i][index] !== ""
-              ? xval * z + (+dragd.current[i][index+1] * b) +e
+              ? xval * z + +dragd.current[i][index + 1] * b + e
               : "")
         );
         ///////////////////////////////////////open/////////////////////////////////////////////
@@ -104,7 +64,7 @@ else{
         lo.push(
           draga.current[i][index] +
             (dragd.current[i][index] !== ""
-              ? (+dragd.current[i][index-1] * c)+ yval * d +f
+              ? +dragd.current[i][index - 1] * c + yval * d + f
               : "")
         );
       }
@@ -119,8 +79,51 @@ else{
           .replace(/ (?=[A-Z]|[a-z])/g, "")
       );
       vgpath.current.splice(a, 1, targetObject.current[a][0].getAttribute("d"));
-    }  else {
-          targetObject.current[a][0].setAttribute(`transform`,`rotate(${-angle} ${c2x} ${c2y})`)
+    } else if (targetObject.current[a][0].localName == "rect") {
+      targetObject.current[a][0].setAttribute("x", lo.map((m) => m)[0]);
+      targetObject.current[a][0].setAttribute("y", lo.map((m) => m)[1]);
+      vgpath.current.splice(
+        a,
+        1,
+        `RECT:${targetObject.current[a][0].getAttribute(
+          "x"
+        )} ${targetObject.current[a][0].getAttribute(
+          "y"
+        )} ${targetObject.current[a][0].getAttribute(
+          "width"
+        )} ${targetObject.current[a][0].getAttribute("height")}`
+      );
+    } else if (targetObject.current[a][0].localName == "circle") {
+      targetObject.current[a][0].setAttribute("cx", lo.map((m) => m)[0]);
+      targetObject.current[a][0].setAttribute("cy", lo.map((m) => m)[1]);
+      vgpath.current.splice(
+        a,
+        1,
+        `CIRCLE:${targetObject.current[a][0].getAttribute(
+          "cx"
+        )} ${targetObject.current[a][0].getAttribute(
+          "cy"
+        )} ${targetObject.current[a][0].getAttribute("r")}`
+      );
+    } else if (targetObject.current[a][0].localName == "ellipse") {
+      targetObject.current[a][0].setAttribute("cx", lo.map((m) => m)[0]);
+      targetObject.current[a][0].setAttribute("cy", lo.map((m) => m)[1]);
+      vgpath.current.splice(
+        a,
+        1,
+        `ELLIPSE:${targetObject.current[a][0].getAttribute(
+          "cx"
+        )} ${targetObject.current[a][0].getAttribute(
+          "cy"
+        )} ${targetObject.current[a][0].getAttribute(
+          "rx"
+        )} ${targetObject.current[a][0].getAttribute("ry")}`
+      );
+    } else if (targetObject.current[a][0].localName == "line") {
+      targetObject.current[a][0].setAttribute("x1", lo.map((m) => m)[0]);
+      targetObject.current[a][0].setAttribute("y1", lo.map((m) => m)[1]);
+      targetObject.current[a][0].setAttribute("x2", lo.map((m) => m)[2]);
+      targetObject.current[a][0].setAttribute("y2", lo.map((m) => m)[3]);
     }
   });
 };

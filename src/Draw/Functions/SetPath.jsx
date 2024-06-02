@@ -12,6 +12,7 @@ export let setPathData = (context,x,y) => {
     for (let index = 0; index < dragd.current[i].length; index++) {
       let xval = + dragd.current[i][index] - dragx.current + x;
       let yval = +dragd.current[i][index] - dragy.current + y;
+    
       //////////////////////////////////////open////////////////////////////////
       if (
         (draga.current[i][index] == "M" ||

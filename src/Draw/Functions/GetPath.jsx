@@ -23,6 +23,7 @@ export let getPathData=(context)=>{
                 .replace(/(\.*|-)\d/g, "")
                 .split(" ")
             );
+                
           } else if (targetObject.current[e][0].localName == "rect") {
             lockdrag.current &&
               dragd.current.push([
