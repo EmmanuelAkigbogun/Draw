@@ -16,6 +16,7 @@ import { getRotateAngle } from "./Functions/getRotateAngle";
 import { rotateFx } from "./Functions/xFx";
 import { setTran } from "./Functions/SetTrans";
 import { setRotate } from "./Functions/SetRotate";
+import { BfrSetPathV } from "./Functions/BfrSetPathV";
 function WindowFx() {
   let context = useContext(Context);
   let cwidth = context.cwidth;
@@ -63,8 +64,8 @@ function WindowFx() {
   let cursor = context.cursor;
   let eliele = context.eliele;
   let lockdrag = context.lockdrag;
-  let rotatedown=context.rotatedown;
-    let rotatewheel = context.rotatewheel;
+  let rotatedown = context.rotatedown;
+  let rotatewheel = context.rotatewheel;
   let rcursor = context.rcursor;
   let vectorindex = context;
   let vectoredit = context.vectoredit;
@@ -85,14 +86,16 @@ function WindowFx() {
   let centercirclearr = context.centercirclearr;
   let vage = context.vage;
   let bend = context.bend;
-  let ashen=context.ashen
+  let ashen = context.ashen;
   let rotatetype = context.rotatetype;
-  let mouseon=useRef(false)
+  let mouseon = useRef(false);
   useEffect(() => {
     window.onresize = (e) => {
+      ///*
       cwidth.current = window.innerWidth;
       cheight.current = window.innerHeight;
       setRender((r) => r + 1);
+      //*/
     };
     window.onkeydown = (e) => {
       let hovervalue = null;
@@ -139,7 +142,7 @@ function WindowFx() {
         vectorCi.current = [];
         vectorCj.current = [];
         vectorCp.current = [];
-        vectorCL.current=[];
+        vectorCL.current = [];
         vectorGp.current = [];
         vectorP.current = [];
         vectoredit.current = false;
@@ -150,33 +153,34 @@ function WindowFx() {
         draga.current = [];
         vectord.current = [];
         vectora.current = [];
+        alignedline.current=[]
         vectordrag.current = false;
         bend.current = false;
         // target.current[0].classList.remove("none");
-                 let el = target.current[0];
-                 target.current = [];
-                 targetObject.current = {};
-                 target.current.push(el);
-                 target.current.push(target.current[0].getBBox().x);
-                 target.current.push(target.current[0].getBBox().y);
-                 target.current.push(target.current[0].getBBox().width);
-                 target.current.push(target.current[0].getBBox().height);
-                 target.current.push(target.current[1] + target.current[3]);
-                 target.current.push(target.current[2] + target.current[4]);
-                 target.current.push(hovercolor.current);
-                 targetObject.current[hovercolor.current] = target.current;
-                 
+        let el = target.current[0];
+        target.current = [];
+        targetObject.current = {};
+        target.current.push(el);
+        target.current.push(target.current[0].getBBox().x);
+        target.current.push(target.current[0].getBBox().y);
+        target.current.push(target.current[0].getBBox().width);
+        target.current.push(target.current[0].getBBox().height);
+        target.current.push(target.current[1] + target.current[3]);
+        target.current.push(target.current[2] + target.current[4]);
+        target.current.push(Array.from(vg.current.children).indexOf(el));
+        targetObject.current[Array.from(vg.current.children).indexOf(el)] = target.current;
       } else {
         if (
           !e.target.getAttribute("name")?.includes("art$") &&
           e.target.localName === "path"
         ) {
-        reDefine(context);
+          reDefine(context);
         }
       }
       setRender((r) => r + 1);
     };
-    window.onpointerdown = (e) => {
+          window.onpointerdown = (e) => {
+  
       let dataX =
         (e.clientX - vg.current.getBoundingClientRect().x) *
           (cwidth.current / vg.current.clientWidth) +
@@ -195,35 +199,32 @@ function WindowFx() {
             .map((e) => +e);
           vectorctrmixed.current = [];
           vctrline.current = [];
-               let ndx = e.target
-                 .getAttribute("data-value")
-                 .split(" ")
-                 .map((e) => +e)
-                 .slice(0, 2);
-              let pointx = e.target
-                                .getAttribute("data-value")
-                                .split(" ")
-                                .map((e) => +e);
+          let ndx = e.target
+            .getAttribute("data-value")
+            .split(" ")
+            .map((e) => +e)
+            .slice(0, 2);
+          let pointx = e.target
+            .getAttribute("data-value")
+            .split(" ")
+            .map((e) => +e);
 
-          if (vDragpointsArr.current.length > 4 ) {
+          if (vDragpointsArr.current.length > 4) {
             if (bend.current) {
-                 vDragpointsArr.current = [];
-               vectorctrmixed.current = [];
-               vctrline.current = [];
-               bendCntrlDragLine(context,ndx);
+              vDragpointsArr.current = [];
+              vectorctrmixed.current = [];
+              vctrline.current = [];
+              bendCntrlDragLine(context, ndx);
 
-                             vectordrag.current=true
+              vectordrag.current = true;
+            } else {
+              let dataq = syncMZOnZ(context, pointx);
+              lineDrag(context, pointx, 0, 1, 6, 7);
+              if (dataq !== undefined) {
+                MZOnZDrag(context, dataq[0], dataq[0] + 1);
+              }
             }
-            else{
-               let dataq = syncMZOnZ(context, pointx);
-               lineDrag(context, pointx, 0, 1, 6, 7); 
-               if (dataq!==undefined) {
-                   MZOnZDrag(context, dataq[0], dataq[0] + 1);   
-               }  
-                
-      
-            }
-          }else{
+          } else {
             if (bend.current) {
               vDragpointsArr.current = [];
               vage.current = e.target
@@ -231,8 +232,8 @@ function WindowFx() {
                 .split(" ")
                 .map((e) => +e)
                 .slice(0, 2);
-              
-                vage.current.push(
+
+              vage.current.push(
                 e.target.getPointAtLength((2 * e.target.getTotalLength()) / 5).x
               );
               vage.current.push(
@@ -251,25 +252,21 @@ function WindowFx() {
                 ).y
               );
               //vDragpointsArr.current=vage.current.slice(2);
-                  dragd.current=[]
-                  draga.current = [];
-                  getPathData(context);
-                  vectorPathData(context);
-                  AddPath(context);
-                  reDefine(context)
-                bendCntrlDragLine(context, ndx);
+              dragd.current = [];
+              draga.current = [];
+              getPathData(context);
+              vectorPathData(context);
+              AddPath(context);
+              reDefine(context);
+              bendCntrlDragLine(context, ndx);
+            } else {
+              let dataq = syncMZOnZ(context, pointx);
+              console.log(dataq);
+              lineDrag(context, pointx, 0, 1, 2, 3);
+              if (dataq !== undefined) {
+                MZOnZDrag(context, dataq[0], dataq[0] + 1);
+              }
             }
-            else{
-
-                let dataq=  syncMZOnZ(context, pointx); 
-                console.log(dataq);
-                lineDrag(context,pointx,0,1,2,3)
-                if (dataq !== undefined) {
-                      MZOnZDrag(context, dataq[0], dataq[0] + 1);
-                } 
-            }
-  
-         
           }
           dragd.current = [];
           draga.current = [];
@@ -287,7 +284,7 @@ function WindowFx() {
           getPathData(context);
           vectorPathData(context);
           AddPath(context);
-          reDefine(context)
+          reDefine(context);
           setRender((r) => r + 1);
         } else if (
           !e.target.getAttribute("name")?.includes("art$") &&
@@ -302,68 +299,54 @@ function WindowFx() {
             e.target.getAttribute("name")?.includes("vlineart$")
           ) {
             if (e.target.getAttribute("name")?.includes("vcirart$")) {
-
               e.target.setAttribute("fill", "blue");
               e.target.setAttribute("stroke", "white");
-              let cntrl12= cntrlFromPoint(context, +e.target.getAttribute("data-value")); 
+              let cntrl12 = cntrlFromPoint(
+                context,
+                +e.target.getAttribute("data-value")
+              );
               let indexData = vectorGp.current.indexOf(
-                   +e.target.getAttribute("data-value")
-                 );
-              let pointbfr = vectorGp.current[indexData-2];
-               let pointaft = vectorGp.current[indexData+2];
-               let pointcenter = +e.target.getAttribute("data-value");
-        
-               let cntrl34= cntrlFromPoint(context, pointbfr); 
-               let cntrl56 = cntrlFromPoint(context, pointaft); 
+                +e.target.getAttribute("data-value")
+              );
+              let pointbfr = vectorGp.current[indexData - 2];
+              let pointaft = vectorGp.current[indexData + 2];
+              let pointcenter = +e.target.getAttribute("data-value");
+
+              let cntrl34 = cntrlFromPoint(context, pointbfr);
+              let cntrl56 = cntrlFromPoint(context, pointaft);
               vDragpointsArr.current = [
                 pointcenter,
                 pointcenter + 1,
-                ...cntrl12//,...cntrl34,...cntrl56
+                ...cntrl12, //,...cntrl34,...cntrl56
               ];
-                 vectorctrmixed.current = [];
-                 vctrline.current = [];
-                 vectorctrmixed.current.push(...cntrl12,...cntrl34,...cntrl56) 
-              console.log(cntrl12,cntrl34,cntrl56);
-              multiLineFx(context,cntrl12,pointcenter)
-               multiLineFx(context, cntrl34,pointbfr);
-                multiLineFx(context, cntrl56,pointaft);
-                 //////////////////////////////m and z sync////////////////////////////////////////////
-                   if (
-                     vectora.current[0][
-                       pointcenter + 2
-                     ] == "Z"
-                   ) {
-                    if (
-                      vectord.current[0][+e.target.getAttribute("data-mz")] ==
-                        vectord.current[0][
-                          pointcenter
-                        ] &&
-                      vectord.current[0][+e.target.getAttribute("data-mz")+1] ==
-                        vectord.current[0][pointcenter+1]
-                    ) {
-                     //only i for M CURVE
-                     let pointmz = +e.target.getAttribute("data-mz");
-                     let cntrlz = cntrlFromPoint(context, pointmz); 
-                      vDragpointsArr.current.push(
-                        pointmz
-                      );
-                      vDragpointsArr.current.push(
-                        pointmz+1
-                      );
-                           
-                        vDragpointsArr.current.push(
-                               ...cntrlz
-                             );
-                          //length required          
-                          vectorctrmixed.current.push(...cntrlz);
-                        multiLineFx(context, cntrlz, pointmz);
-                    
-                    }
-                  
-                   }
+              vectorctrmixed.current = [];
+              vctrline.current = [];
+              vectorctrmixed.current.push(...cntrl12, ...cntrl34, ...cntrl56);
+              console.log(cntrl12, cntrl34, cntrl56);
+              multiLineFx(context, cntrl12, pointcenter);
+              multiLineFx(context, cntrl34, pointbfr);
+              multiLineFx(context, cntrl56, pointaft);
+              //////////////////////////////m and z sync////////////////////////////////////////////
+              if (vectora.current[0][pointcenter + 2] == "Z") {
+                if (
+                  vectord.current[0][+e.target.getAttribute("data-mz")] ==
+                    vectord.current[0][pointcenter] &&
+                  vectord.current[0][+e.target.getAttribute("data-mz") + 1] ==
+                    vectord.current[0][pointcenter + 1]
+                ) {
+                  //only i for M CURVE
+                  let pointmz = +e.target.getAttribute("data-mz");
+                  let cntrlz = cntrlFromPoint(context, pointmz);
+                  vDragpointsArr.current.push(pointmz);
+                  vDragpointsArr.current.push(pointmz + 1);
+
+                  vDragpointsArr.current.push(...cntrlz);
+                  //length required
+                  vectorctrmixed.current.push(...cntrlz);
+                  multiLineFx(context, cntrlz, pointmz);
+                }
+              }
               ///////////////////////////////////////////////////////////////////////////////////////
-           
-  
             }
             if (e.target.getAttribute("name")?.includes("vlineart$")) {
               console.log("vli");
@@ -415,14 +398,13 @@ function WindowFx() {
             dragx.current = dataX;
             dragy.current = dataY;
             vectordrag.current = true;
+          } else if (e.target.localName == "svg") {
+            vctrline.current = [];
+            vectorctrmixed.current = [];
+            vDragpointsArr.current = [];
+            velement?.current[0]?.setAttribute("fill", "white");
+            velement?.current[0]?.setAttribute("stroke", "white");
           }
-         else if (e.target.localName =="svg") {
-                vctrline.current = [];
-                vectorctrmixed.current = [];
-                vDragpointsArr.current=[]
-                velement?.current[0]?.setAttribute("fill", "white");
-                velement?.current[0]?.setAttribute("stroke", "white");
-         }
         }
         setRender((r) => r + 1);
       } else {
@@ -502,46 +484,44 @@ function WindowFx() {
               dragy.current = dataY;
               lockdrag.current = true;
               getPathData(context);
-            } 
-            else if (
-                  e.target.getAttribute("name") === "rotcirart$"
-                ) {
-                  dragd.current = [];
-                  draga.current = [];
-                  dragx.current = dataX;
-                  dragy.current = dataY;
-                  rotatedown.current = true;
-                  rotatewheel.current = true;
-                  rotatetype.current = e.target.getAttribute("data-rotate");
-                } else {
-                  if (
-                    dataX >= dragrect.current[0] &&
-                    dataX <= dragrect.current[1] &&
-                    dataY >= dragrect.current[2] &&
-                    dataY <= dragrect.current[3]
-                  ) {
-                    drag.current = true;
-                    highlight.current = false;
-                  } else {
-                    pick.current = [];
-                    drag.current = false;
-                    highlight.current = true;
-                    pick.current.push(dataX, dataY);
-                  }
-                  if (!e.ctrlKey) {
-                    dragbool.current = true;
-                    dragd.current = [];
-                    draga.current = [];
-                  } else {
-                    dragbool.current = true;
-                  }
-                }
+            } else if (e.target.getAttribute("name") === "rotcirart$") {
+              dragd.current = [];
+              draga.current = [];
+              dragx.current = dataX;
+              dragy.current = dataY;
+              rotatedown.current = true;
+              rotatewheel.current = true;
+              rotatetype.current = e.target.getAttribute("data-rotate");
+            } else {
+              if (
+                dataX >= dragrect.current[0] &&
+                dataX <= dragrect.current[1] &&
+                dataY >= dragrect.current[2] &&
+                dataY <= dragrect.current[3]
+              ) {
+                drag.current = true;
+                highlight.current = false;
+              } else {
+                pick.current = [];
+                drag.current = false;
+                highlight.current = true;
+                pick.current.push(dataX, dataY);
+              }
+              if (!e.ctrlKey) {
+                dragbool.current = true;
+                dragd.current = [];
+                draga.current = [];
+              } else {
+                dragbool.current = true;
+              }
+            }
           }
         }
         if (
           Object.keys(targetObject.current).length > 0 &&
           edit.current &&
-          !lockdrag.current&&!rotatedown.current
+          !lockdrag.current &&
+          !rotatedown.current
         ) {
           dragx.current = dataX;
           dragy.current = dataY;
@@ -559,11 +539,16 @@ function WindowFx() {
         (e.clientY - vg.current.getBoundingClientRect().y) *
           (cheight.current / vg.current.clientHeight) +
         vy.current;
+      if (pen.current) {
+            movepen.current = `${x} ${y}`;
+            cursor.current=`none`
+          }
       if (polyelip.current[0] && !vectoredit.current) {
         polyelip.current[2] = `${"0"} ${"0"} ${"0"} ${"0"}`;
       }
       if (vectoredit.current) {
         if (vectordrag.current) {
+          BfrSetPathV(context);
           setPathDataV(context, x, y);
           vectord.current = [];
           vectora.current = [];
@@ -572,7 +557,7 @@ function WindowFx() {
         }
       } else {
         if (rotatedown.current) {
-          getRotateAngle(context,x,y)
+          getRotateAngle(context, x, y);
           cursor.current = rcursor.current;
         }
         if (lockdrag.current) {
@@ -666,8 +651,8 @@ function WindowFx() {
           } else if (rcursor.current == "w-resize" && x1 - x2 !== 0) {
             setRz(context, x2, 1, x1 - x2, x - pick.current[2], 1, 1);
           } else {
-            //setPathData(context,x,y);
-            setTran(context, x - dragx.current, y - dragy.current);
+            setPathData(context,x,y);
+            //setTran(context, x - dragx.current, y - dragy.current);
           }
         }
 
@@ -709,9 +694,10 @@ function WindowFx() {
             vgpath.current.splice(
               indexvalue,
               1,
-              `ELLIPSE:${valx + valw / 2} ${valy + valh / 2} ${valw / 2} ${
+              `ELLIPSE:${(valx + valw / 2).toFixed(2)} ${(
+                valy +
                 valh / 2
-              }`
+              ).toFixed(2)} ${(valw / 2).toFixed(2)} ${(valh / 2).toFixed(2)}`
             );
             /*
                    `M${pick.current[0] + (x - pick.current[0]) / 2} ${
@@ -771,7 +757,10 @@ function WindowFx() {
             vgpath.current.splice(
               indexvalue,
               1,
-              `CIRCLE:${valx + valw / 2} ${valy + valh / 2} ${valh / 2}`
+              `CIRCLE:${(valx + valw / 2).toFixed(2)} ${(
+                valy +
+                valh / 2
+              ).toFixed(2)} ${(valh / 2).toFixed(2)}`
             );
           } else if (polyelip.current[0]) {
             let polynumber = 0;
@@ -779,29 +768,37 @@ function WindowFx() {
             let increment =
               eliele.current.current.getTotalLength() /
               Number(polyelip.current[1]);
-            for (let index = 0; index < polyelip.current[1] ; index++) {
+            for (let index = 0; index < polyelip.current[1]; index++) {
               if (index === 0) {
                 try {
-                  polyguy += `M${
-                    eliele.current.current.getPointAtLength(polynumber).x
-                  } ${eliele.current.current.getPointAtLength(polynumber).y}`;
+                  polyguy += `M${eliele.current.current
+                    .getPointAtLength(polynumber)
+                    .x.toFixed(2)} ${eliele.current.current
+                    .getPointAtLength(polynumber)
+                    .y.toFixed(2)}`;
                 } catch (e) {}
               } else {
                 try {
-                  polyguy += `L${
-                    eliele.current.current.getPointAtLength(polynumber).x
-                  } ${eliele.current.current.getPointAtLength(polynumber).y}`;
+                  polyguy += `L${eliele.current.current
+                    .getPointAtLength(polynumber)
+                    .x.toFixed(2)} ${eliele.current.current
+                    .getPointAtLength(polynumber)
+                    .y.toFixed(2)}`;
                 } catch (e) {}
               }
               polynumber += increment;
             }
 
-            vgpath.current.splice(indexvalue, 1, polyguy+"Z");
+            vgpath.current.splice(indexvalue, 1, polyguy + "Z");
           } else if (rbox.current) {
             vgpath.current.splice(
               indexvalue,
               1,
-              `M${pick.current[0]} ${pick.current[1]}L${x} ${pick.current[1]}L${x} ${y}L${pick.current[0]} ${y}Z`
+              `M${pick.current[0].toFixed(2)} ${pick.current[1].toFixed(
+                2
+              )}L${x.toFixed(2)} ${pick.current[1].toFixed(2)}L${x.toFixed(
+                2
+              )} ${y.toFixed(2)}L${pick.current[0].toFixed(2)} ${y.toFixed(2)}Z`
             );
           }
           setRender((r) => r + 1);
@@ -816,8 +813,8 @@ function WindowFx() {
           ) {
             dragbool.current = false;
             cursor.current = `grabbing`;
-            //setPathData(context, x, y);
-            setTran(context,x-dragx.current,y- dragy.current);
+            setPathData(context, x, y);
+            //setTran(context, x - dragx.current, y - dragy.current);
             editdrag.current = true;
             setRender((r) => r + 1);
           } else {
@@ -915,8 +912,8 @@ function WindowFx() {
             targetObject.current = {};
             targetObject.current[hovercolor.current] = target.current;
           }
-     
-          if (editdrag.current || lockdrag.current||rotatedown.current) {
+
+          if (editdrag.current || lockdrag.current || rotatedown.current) {
             if (editdrag.current) {
               editdrag.current = false;
             }
@@ -924,19 +921,17 @@ function WindowFx() {
               lockdrag.current = false;
             }
             if (rotatedown.current) {
-                    rotatedown.current=false;
-                
-                                Object.keys(targetObject.current).map((a, i) => {
-                                  targetObject.current[a][0].setAttribute(
-                                    "rotate-data",
-                                    +targetObject.current[a][0]?.getAttribute(
-                                      "rotate-dataw"
-                                    ) +
-                                      +targetObject.current[a][0]?.getAttribute(
-                                        "rotate-data"
-                                      )
-                                  );
-                                })
+              rotatedown.current = false;
+              Object.keys(targetObject.current).map((a, i) => {
+                targetObject.current[a][0].setAttribute(
+                  "rotate-data",
+                  +targetObject.current[a][0]?.getAttribute("rotate-dataw") +
+                    +targetObject.current[a][0]?.getAttribute("rotate-data")
+                );
+                targetObject.current[a][0].removeAttribute(
+                  "rotate-dataw"
+                );
+              });
             }
             if (
               e.target.getAttribute("cursor")?.includes("cursor") &&
@@ -981,7 +976,7 @@ function WindowFx() {
               vgpath.current.push(
                 `M${dataX} ${dataY} ${dataX + 100} ${dataY} ${dataX + 100} ${
                   dataY + 100
-                } ${dataX} ${dataY+100}Z`
+                } ${dataX} ${dataY + 100}Z`
               );
               vgcolor.current.push(`white`);
               straightcolor.current.push(`white`);
@@ -1021,7 +1016,8 @@ function WindowFx() {
             .getAttribute("data-value")
             .split(" ")
             .map((e) => +e).length == 4 &&
-          !vectordrag.current&&!bend.current
+          !vectordrag.current &&
+          !bend.current
         ) {
           centercirclearr.current = [
             e.target.getPointAtLength(e.target.getTotalLength() / 2).x,
@@ -1041,16 +1037,19 @@ function WindowFx() {
         }
         setRender((r) => r + 1);
       }
-        if (e.target.getAttribute("name")?.includes("centercircleart$")) {
-         mouseon.current=true
-    
-        }
-        else{
-                mouseon.current = false;
-                  
-        }
+      if (e.target.getAttribute("name")?.includes("centercircleart$")) {
+        mouseon.current = true;
+      } else {
+        mouseon.current = false;
+      }
     };
     window.onwheel = (e) => {
+      ///*
+      console.log(e.dataY<0&&e.ctrlKey?"zoom"?e.ctrlKey:"zoom":"scroll");
+      //console.log(e.deltaX,"dx dy",e.deltaY,e.deltaZ);
+     // console.log(e.wheelDeltaX, "wdx wdy","wd", e.wheelDeltaY, e.wheelDelta);
+     if(e.ctrlKey){}
+     else{
       let x =
         (e.clientX - vg.current.getBoundingClientRect().x) *
           (cwidth.current / vg.current.clientWidth) +
@@ -1089,7 +1088,9 @@ function WindowFx() {
 
       vx.current = vx.current + e.deltaX;
       vy.current = vy.current + e.deltaY;
-      setRender((r) => r + 1);
+    }
+          setRender((r) => r + 1);
+     // */
     };
 
     window.onpointerout = (e) => {
@@ -1111,8 +1112,11 @@ function WindowFx() {
         edit.current && e.target.setAttribute("stroke-width", thick.current);
         hovercolor.current = -1;
       }
-      if (e.target.getAttribute("name")?.includes("cloneart$")&&!mouseon.current) {
-        e.target.setAttribute("stroke-width", thick.current+1);
+      if (
+        e.target.getAttribute("name")?.includes("cloneart$") &&
+        !mouseon.current
+      ) {
+        e.target.setAttribute("stroke-width", thick.current + 1);
         e.target.setAttribute(
           "stroke",
           vgcolor.current[Object.keys(targetObject.current)[0]]

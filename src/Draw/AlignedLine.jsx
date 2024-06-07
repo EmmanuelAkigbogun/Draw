@@ -3,7 +3,9 @@ import { Context } from "./Draw";
 function AlignedLine() {
   let context = useContext(Context);
   let alignedline = context.alignedline;
-  return alignedline.current.map((e,i) => {
+  let pen=context.pen
+  let vectoredit=context.vectoredit
+  return (pen.current|vectoredit.current)&&alignedline.current.map((e,i) => {
     return (
       <line
         x1={e.split(" ")[0]}

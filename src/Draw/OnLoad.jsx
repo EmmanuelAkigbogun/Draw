@@ -5,6 +5,7 @@ import { Context } from "./Draw";
 import {down, mousemove, up} from "./Functions/Mouse"
 import {keydownfx} from "./Download"
 import { promptfx } from "./Download";
+import { Wheel } from "./Wheel";
  function OnLoad() {
   let context=useContext(Context)
   let vg=context.vg
@@ -23,6 +24,11 @@ import { promptfx } from "./Download";
   let vectoredit = context.vectoredit;
       let shapes = context.shapes;
   useEffect(()=>{
+    vg.current.addEventListener("wheel",(e)=>{
+          //    e.preventDefault();
+          //    e.stopPropagation();
+     //Wheel(context,e);
+    })
     vg.current.addEventListener("touchstart", (e) => {
       focusbool.current[0] = true;
       focusbool.current[1] = e.timeStamp;

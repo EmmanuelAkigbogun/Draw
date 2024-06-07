@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { Context } from "./Draw";
 import Dimension from "./Dimension";
 import { getPathData } from "./Functions/GetPath";
@@ -7,7 +7,7 @@ import ResizeCircles from "./ResizeCircles";
 import RotateCircles from "./RotateCircles";
 import RectBBox from "./RectBBox";
 import RectMidCirleTest from "./RectMidCirleTest";
-import { getBezierPoints } from "./TryEllipse";
+import { RotatePoints } from "./RotatePoints";
 function Rect() {
   let context = useContext(Context);
   let targetObject = context.targetObject;
@@ -47,8 +47,16 @@ function Rect() {
       2
   );
   y2 = Math.max(...y2);
+  /*
+  let matrix = Object.keys(targetObject.current)
+    .map((e) =>(RotatePoints(targetObject.current[e][0])))
+    if (matrix.join("")==""||matrix.length==0) {
+    } 
+    else{
+      matrix = matrix.map(e=>e+` `).reduce((e, i) => e + i).trim();
+    }
+    */
   //*/
-
   /*
   let xdata=[]
   let ydata = [];
@@ -85,9 +93,22 @@ function Rect() {
     let y1=Math.min(...ymin)+2
     let y2 = Math.max(...ymax) - 2;
 */
+  /* 
 
+    const pi = Math.PI;
+    let cx = dragrectr.current[0]; 
+    let cy = dragrectr.current[2]; 
+    let m=dragrectr.current[1]; 
+    let n = dragrectr.current[3]; 
+    let differy = 10 - 0;
+    let differx =  10- 0;
+    let yita = Math.atan(differy / differx);
+    let ym = yita * 180;
+    let gh = ym / pi;
+    console.log(gh);
+    */
   dragrect.current = [x1, x2, y1, y2];
-  dragrectr.current = [x1 + 2, x2 - 2, y1 + 2, y2 - 2];
+  dragrectr.current = [x1+2, x2-2, y1+2, y2-2];
   return (
     Math.abs(x1) !== Infinity &&
     !vectoredit.current && (
@@ -107,8 +128,8 @@ function Rect() {
           y2={dragrect.current[3]}
         />
         <RectBBox />
-        <ResizeCircles />
         <RotateCircles />
+        <ResizeCircles />
         <RectMidCirleTest />
       </g>
     )

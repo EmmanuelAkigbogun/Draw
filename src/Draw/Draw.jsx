@@ -66,7 +66,7 @@ function Draw() {
   let line = useRef(false);
   let pen = useRef(false);
   let pencircle = useRef(0);
-  let circlerad = useRef([`.4%`, `.2%`,`.1`,`.6%`]);
+  let circlerad = useRef([`.4%`, `.2%`,`.1%`,`1.5%`,`.6%`]);
   let lineeditwidth = useRef(`.3%`);
   let pencirclearr = useRef([]);
   let movepen = useRef(``);
@@ -125,6 +125,7 @@ function Draw() {
   let rotatewheel = useRef(false);
   let rotatetype = useRef(``);
   let rotatepoint = useRef([]);
+  let zoomvalue = useRef(0);;
   let contextData = {
     render: render,
     edit: edit,
@@ -210,6 +211,7 @@ function Draw() {
     rotatewheel: rotatewheel,
     rotatetype: rotatetype,
     rotatepoint: rotatepoint,
+    zoomvalue: zoomvalue,
   };
   return (
     <>

@@ -13,7 +13,7 @@ function PenHoverCircle() {
           r={circlerad.current[0]}
           strokeWidth={circlerad.current[1]}
           fill={"white"}
-          stroke="blue"
+          stroke="#343434"
           name="mouseart$"
         />
       )

@@ -63,6 +63,7 @@ export let keydownfx = (e, context, target) => {
     cursor.current = ``;
     setRender((r) => r + 1);
   } else if (e.key === "f" || e.key === "F") {
+    let obj = targetObject.current; 
     let arraynumber = [];
     Object.keys(targetObject.current).map((e) => {
       if (targetObject.current[e][0].localName === "rect") {
@@ -74,10 +75,26 @@ export let keydownfx = (e, context, target) => {
         arraynumber.push(targetObject.current[e][7]);
         setRender((r) => r + 1);
       }
+  
     });
-    setRender((r) => r + 1);
-
-    targetObject.current = {};
+   
+            targetObject.current = {};
+                    Object.keys(obj).map((e) => {
+                 let el = obj[e][0];
+                 let tgt = [];
+                 tgt.push(el);
+                 tgt.push(tgt[0].getBBox().x);
+                 tgt.push(tgt[0].getBBox().y);
+                 tgt.push(tgt[0].getBBox().width);
+                 tgt.push(tgt[0].getBBox().height);
+                 tgt.push(tgt[1] + tgt[3]);
+                 tgt.push(tgt[2] + tgt[4]);
+                 tgt.push(Array.from(vg.current.children).indexOf(el));
+                 targetObject.current[
+                   Array.from(vg.current.children).indexOf(el)
+                 ] = tgt;
+                })
+  
   } else if (e.key === "D" || e.key === "d") {
     if (!e.shiftKey) {
       movepen.current = ``;
@@ -281,9 +298,9 @@ export let keydownfx = (e, context, target) => {
       circle.current = false;
       let val = prompt("sides");
       polyelip.current.splice(0, 1, true);
-      val > 2
+      val > 1
         ? polyelip.current.splice(1, 1, +val)
-        : polyelip.current.splice(1, 1, 3);
+        : polyelip.current.splice(1, 1, 2);
     }
     setRender((r) => r + 1);
   } else {

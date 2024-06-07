@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { Context } from "./Draw";
 function RotateCircles() {
         let context = useContext(Context);
@@ -9,18 +9,19 @@ function RotateCircles() {
         let edit = context.edit;
         let highlight = context.highlight;
         let rcursor=context.rcursor
+        let opacityValue=useRef(0);
     return (
       <>
         <circle
           cx={
             Math.abs(dragrect.current[0]) === Infinity
               ? null
-              : dragrect.current[0] - 8
+              : dragrect.current[0]
           }
           cy={
             Math.abs(dragrect.current[2]) === Infinity
               ? null
-              : dragrect.current[2] - 8
+              : dragrect.current[2]
           }
           r={circlerad.current[3]}
           strokeWidth={circlerad.current[1]}
@@ -36,18 +37,18 @@ function RotateCircles() {
             rcursor.current = e.target.getAttribute("cursor");
             rotatedown.current = true;
           }}
-          opacity={0}
+          opacity={opacityValue.current}
         />
         <circle
           cx={
             Math.abs(dragrect.current[1]) === Infinity
               ? null
-              : dragrect.current[1] + 8
+              : dragrect.current[1]
           }
           cy={
             Math.abs(dragrect.current[2]) === Infinity
               ? null
-              : dragrect.current[2] - 8
+              : dragrect.current[2]
           }
           r={circlerad.current[3]}
           strokeWidth={circlerad.current[1]}
@@ -63,18 +64,18 @@ function RotateCircles() {
             rcursor.current = e.target.getAttribute("cursor");
             rotatedown.current = true;
           }}
-          opacity={0}
+          opacity={opacityValue.current}
         />
         <circle
           cx={
             Math.abs(dragrect.current[1]) === Infinity
               ? null
-              : dragrect.current[1] + 8
+              : dragrect.current[1]
           }
           cy={
             Math.abs(dragrect.current[3]) === Infinity
               ? null
-              : dragrect.current[3] + 8
+              : dragrect.current[3]
           }
           r={circlerad.current[3]}
           strokeWidth={circlerad.current[1]}
@@ -90,18 +91,18 @@ function RotateCircles() {
             rcursor.current = e.target.getAttribute("cursor");
             rotatedown.current = true;
           }}
-          opacity={0}
+          opacity={opacityValue.current}
         />
         <circle
           cx={
             Math.abs(dragrect.current[0]) === Infinity
               ? null
-              : dragrect.current[0] - 8
+              : dragrect.current[0]
           }
           cy={
             Math.abs(dragrect.current[3]) === Infinity
               ? null
-              : dragrect.current[3] + 8
+              : dragrect.current[3]
           }
           r={circlerad.current[3]}
           strokeWidth={circlerad.current[1]}
@@ -117,7 +118,7 @@ function RotateCircles() {
             rcursor.current = e.target.getAttribute("cursor");
             rotatedown.current = true;
           }}
-          opacity={0}
+          opacity={opacityValue.current}
         />
       </>
     );
