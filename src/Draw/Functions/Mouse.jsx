@@ -14,7 +14,7 @@ export let down = (e, context, ref) => {
   let downconst = context.downconst;
   let vx = context.vx;
   let vy = context.vy;
-  let alignedline = context.alignedline
+  let alignedline = context.alignedline;
   let x =
     (e.clientX - ref.current.getBoundingClientRect().x) *
       (cwidth.current / ref.current.clientWidth) +
@@ -23,6 +23,8 @@ export let down = (e, context, ref) => {
     (e.clientY - ref.current.getBoundingClientRect().y) *
       (cheight.current / ref.current.clientHeight) +
     vy.current;
+  x = x.toFixed(2);
+  y = y.toFixed(2);
   if (vgpathxy.current[`pathmouse`] === undefined) {
     vgpathxy.current[`pathmouse`] = [`M${x} ${y}L${x} ${y}`];
     vgpath.current.push(`M${x} ${y} ${x} ${y}`);
@@ -36,16 +38,18 @@ export let down = (e, context, ref) => {
       if (e.target.getAttribute("name") === "circledbcart$") {
         x = e.target.getAttribute("cx");
         y = e.target.getAttribute("cy");
+      } else {
+        x = movepen.current?.split(" ")[0];
+        y = movepen.current?.split(" ")[1];
       }
-     if (
-       pencirclearr.current.includes(`${x} ${y}`) &&
-       pencirclearr.current[pencirclearr.current.length - 2] !== `${x} ${y}` &&
-       pencirclearr.current[pencirclearr.current.length - 1] !== `${x} ${y}`
-     ) {
-     } 
-     else{
-      downconst.current = downconst.current + `L${x} ${y}`;
-    }
+      if (
+        pencirclearr.current.includes(`${x} ${y}`) &&
+        pencirclearr.current[pencirclearr.current.length - 2] !== `${x} ${y}` &&
+        pencirclearr.current[pencirclearr.current.length - 1] !== `${x} ${y}`
+      ) {
+      } else {
+        downconst.current = downconst.current + `L${x} ${y}`;
+      }
     }
   }
   if (pen.current) {
@@ -57,7 +61,7 @@ export let down = (e, context, ref) => {
       vgpathxy.current = {};
       pencirclearr.current = [];
       movepen.current = `L `;
-      downconst.current = downconst.current+"Z" ;
+      downconst.current = downconst.current + "Z";
     } else {
       pencirclearr.current.push(`${x} ${y}`);
     }
@@ -97,6 +101,8 @@ export let mousemove = (e, context, ref) => {
         (e.clientY - ref.current.getBoundingClientRect().y) *
           (cheight.current / ref.current.clientHeight) +
         vy.current;
+      x = x.toFixed(2);
+      y = y.toFixed(2);
       let end = vg.current.children[
         vgcolor.current.length - 1
       ].getPointAtLength(
@@ -149,22 +155,52 @@ export let mousemove = (e, context, ref) => {
         );
         movepen.current = `${x} ${y}`;
       }
+      alignedline.current = [];
+      let newx = 0;
+      let newy = 0;
       if (line && (begin.x === end.x || begin.y === end.y)) {
         vgcolor.current.splice(vgcolor.current.length - 1, 1, "green");
       } else if (
         pen &&
         pencirclearr.current
           .map((e) => {
-            if (e.includes(`${x}`) || e.includes(`${y}`)) {
-                alignedline.current.push(`${x} ${y} ${e}`)
-              return (e.includes(`${x}`) || e.includes(`${y}`));
+            const digital = 4;
+            let evnum = e.split(" ");
+            let evamax = evnum.map((m) => +m + digital);
+            let evamin = evnum.map((n) => +n - digital);
+            if (
+              (+x <= evamax[0] && +x >= evamin[0]) ||
+              (+y <= evamax[1] && +y >= evamin[1])
+            ) {
+              if (y - evnum[1] <= digital && y - evnum[1] >= -digital) {
+                newy = evnum[1];
+              }
+              if (x - evnum[0] <= digital && x - evnum[0] >= -digital) {
+                newx = evnum[0];
+              } 
+              if (newx==0) {
+                 newx=x
+              }
+              if (newy == 0) {
+                newy = y;
+              }
+              alignedline.current.push(`${newx} ${newy} ${e}`);
+              return (
+                (+x <= evamax[0] && +x >= evamin[0]) ||
+                (+y <= evamax[1] && +y >= evamin[1])
+              );
             }
           })
           .filter((e) => e == true)[0]
       ) {
-      
+        vgpath.current.splice(
+          vgpath.current.length - 1,
+          1,
+          downconst.current + `L${newx} ${newy}`
+        );
+        movepen.current = `${newx} ${newy}`;
       } else {
-        alignedline.current=[]
+        alignedline.current = [];
         vgcolor.current.splice(
           vgcolor.current.length - 1,
           1,

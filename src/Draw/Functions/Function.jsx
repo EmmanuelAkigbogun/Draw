@@ -14,13 +14,15 @@ export let touchstart = (
   mooveboolean.current = false;
   for (let index = 0; index < e.targetTouches.length; index++) {
     const element = e.targetTouches[index];
-    const x =
+    let x =
       (element.clientX - vg.current.getBoundingClientRect().x) *
         (cwidth.current / vg.current.clientWidth) +
       vx.current;
-    const y =
+    let y =
       (element.clientY - vg.current.getBoundingClientRect().y) *
       (cheight.current / vg.current.clientHeight)+vy.current;
+      x=x.toFixed(2)
+      y = y.toFixed(2);
     if (vgpathxy.current[`path${element.identifier}`] === undefined) {
       vgpathxy.current[`path${element.identifier}`] = [`M${x} ${y}L${x} ${y}`];
       vgpath.current.push(`M${x} ${y}L${x} ${y}`);
@@ -53,12 +55,14 @@ export let touchmove = (
 ) => {
   for (let index = 0; index < e.targetTouches.length; index++) {
     const element = e.targetTouches[index];
-    const x =
+    let x =
       (element.clientX - vg.current.getBoundingClientRect().x) *
       (cwidth.current / vg.current.clientWidth)+vx.current;
-    const y =
+    let y =
       (element.clientY - vg.current.getBoundingClientRect().y) *
       (cheight.current / vg.current.clientHeight)+vy.current;
+          x = x.toFixed(2);
+          y = y.toFixed(2);
     if (vgpathxy.current[`path${element.identifier}`] !== undefined) {
            let end = vg.current.children[
              vgidentity.current[`${element.identifier}`]

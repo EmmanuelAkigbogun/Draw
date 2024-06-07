@@ -9,6 +9,7 @@ export let getRotateAngle = (context, x, y) => {
   let rotatewheel = context.rotatewheel;
   let rotatetype = context.rotatetype;
   let anglevalue = context.anglevalue;
+  let targetObject = context.targetObject;
   //console.log(-((titad * 360) / Math.PI));
   //console.log(Math.acos(0));
   /*

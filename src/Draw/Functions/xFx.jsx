@@ -25,8 +25,8 @@ export let xfx=(context,xq,yq)=>{
         dragx.current = x1;
         dragy.current = y1;
         getPathData(context);
-        setPathData(context, xq, yq);
-        //setTran(context, xq - dragx.current, yq - dragy.current);
+        //setPathData(context, xq, yq);
+        setTran(context, xq - dragx.current, yq - dragy.current);
         setRender((r) => r + 1);
         Object.keys(targetObject.current).map((e) => {
           targetObject.current[e][1] = targetObject.current[e][0].getBBox().x;
@@ -46,7 +46,8 @@ export let rotateFx=(context,angle)=>{
             let dragd = context.dragd;
             let draga = context.draga;
             let dragrectr = context.dragrectr;
-             let setRender = context.setRender;
+            let setRender = context.setRender;
+            let targetObject = context.targetObject;
  //       dragd.current = [];
 //        draga.current = [];
 //       getPathData(context);
@@ -63,6 +64,7 @@ export let rotateFx=(context,angle)=>{
         getPathData(context);
         setRotate(context, angle,c2x,c2y);
         setRender((r) => r + 1);
+      
 }
 export let HeightFx=(context,wid,hei)=>{
           let dragd = context.dragd;

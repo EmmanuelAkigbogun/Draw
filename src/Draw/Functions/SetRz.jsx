@@ -63,7 +63,7 @@ export let setRz = (context,x1,y1,w1,w2,h1,h2) => {
         if ((index - oddfactor) % 2 == 0) {
           lo.push(
             draga.current[i][index] +
-              (dragd.current[i][index] !== "" ? xval : "")
+              (dragd.current[i][index] !== "" ? xval.toFixed(2) : "")
           );
           ///////////////////////////////////////open/////////////////////////////////////////////
           if (draga.current[i][index] == "H") {
@@ -73,7 +73,7 @@ export let setRz = (context,x1,y1,w1,w2,h1,h2) => {
         } else {
           lo.push(
             draga.current[i][index] +
-              (dragd.current[i][index] !== "" ? yval : "")
+              (dragd.current[i][index] !== "" ? yval.toFixed(2) : "")
           );
         }
       }
